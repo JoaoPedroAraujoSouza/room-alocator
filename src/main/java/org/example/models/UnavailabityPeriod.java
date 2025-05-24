@@ -8,4 +8,10 @@ public class UnavailabityPeriod {
     private LocalTime startDate;
     private LocalTime endDate;
     private String reason;
+
+    public UnavailabityPeriod(UUID id, LocalTime startDate, LocalTime endDate) {
+        this.id = id;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
 }

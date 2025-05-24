@@ -9,4 +9,12 @@ public class Subject {
     private String description;
     private String hourlyLoad;
     private List<Teacher> teachers;
+
+    public Subject(UUID id, String name, String hourlyLoad, List<Teacher> teachers, String description) {
+        this.id = id;
+        this.name = name;
+        this.hourlyLoad = hourlyLoad;
+        this.teachers = teachers;
+        this.description = description;
+    }
 }

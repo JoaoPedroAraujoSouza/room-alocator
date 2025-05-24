@@ -11,4 +11,14 @@ public class Room {
     private List<String> resources;
     private List<UnavailabityPeriod> unavailabilityPeriods;
     private List<TimeAllocation> timeAllocations;
+
+    public Room(UUID id, String name, String localization, int capacity, List<String> resources, List<UnavailabityPeriod> unavailabilityPeriods, List<TimeAllocation> timeAllocations ) {
+        this.id = id;
+        this.name = name;
+        this.localization = localization;
+        this.capacity = capacity;
+        this.resources = resources;
+        this.unavailabilityPeriods = unavailabilityPeriods;
+        this.timeAllocations = timeAllocations;
+    }
 }
