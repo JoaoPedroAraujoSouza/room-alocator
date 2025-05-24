@@ -4,7 +4,7 @@ import java.util.UUID;
 
 public class TimeAllocation {
     private UUID id;
-    private MajorClass majorClass;
+    private Classroom classroom;
     private Room room;
     private TimeBlock timeblock;
 }

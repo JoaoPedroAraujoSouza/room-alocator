@@ -3,7 +3,7 @@ package org.example.models;
 import java.util.List;
 import java.util.UUID;
 
-public class MajorClass {
+public class Classroom {
     private UUID id;
     private String semester;
     private Shift shift;

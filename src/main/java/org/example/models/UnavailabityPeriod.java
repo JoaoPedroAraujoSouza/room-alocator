@@ -1,7 +1,7 @@
 package org.example.models;
 
-import java.util.UUID;
 import java.time.LocalTime;
+import java.util.UUID;
 
 public class UnavailabityPeriod {
     private UUID id;
