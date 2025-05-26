@@ -68,5 +68,5 @@ Reports on room usage, availability by time slot, and group distribution per roo
 
 - João Pedro de Araújo Souza - joao.pedroaraujosouza@ufrpe.br  
 - Mario Jorge - mario.jorgeandrade@ufrpe.br  
-- Luiz Maranhão - luiz.maranhao@ufrpe.br  
+- Luiz Maranhão - luizfm159@gmail.com  
 - Pedro Roma - pedro.roma@ufrpe.br
