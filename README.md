@@ -1,71 +1,72 @@
-# Sistema de Alocação de Salas em uma Instituição de Ensino
+# Room Allocation System for an Educational Institution
 
-## Descrição
+## Description
 
-Este sistema visa gerenciar a alocação de salas para turmas em uma instituição de ensino. O objetivo é evitar conflitos de uso de salas, garantir a disponibilidade de infraestrutura adequada e organizar horários de aulas. O sistema deve permitir o cadastro de salas, turmas, professores, disciplinas e horários.
+This system aims to manage the allocation of classrooms for groups in an educational institution. The goal is to avoid scheduling conflicts, ensure the availability of adequate infrastructure, and organize class schedules. The system should allow the registration of rooms, groups, teachers, courses, and schedules.
 
-Cada sala possui uma capacidade e recursos (como projetor, lousa digital etc.). As turmas são associadas a disciplinas e professores, e devem ser alocadas em horários específicos e salas disponíveis. O sistema deve evitar conflitos como: dois eventos na mesma sala e horário, ou um professor atribuído a duas turmas simultaneamente.
+Each room has a capacity and available resources (such as a projector, digital whiteboard, etc.). Groups are associated with courses and teachers and must be allocated to specific time slots and available rooms. The system must avoid conflicts such as: two events in the same room at the same time or a teacher assigned to two groups simultaneously.
 
-Relatórios de uso de sala, disponibilidade por horário e distribuição de turmas por sala devem ser oferecidos, com exportação em PDF ou CSV.
+Reports on room usage, availability by time slot, and group distribution per room should be provided, with export options in PDF or CSV.
 
-## Requisitos Funcionais
+## Functional Requirements
 
-### 1. Gerenciamento de Salas
+### 1. Room Management
 
-- **REQ01**: Permitir o gerenciamento de salas, incluindo nome, localização, capacidade máxima e recursos disponíveis.
-- **REQ02**: Permitir a marcação de salas como indisponíveis em períodos específicos (ex: manutenção).
+- **REQ01**: Allow room management, including name, location, maximum capacity, and available resources.
+- **REQ02**: Allow marking rooms as unavailable during specific periods (e.g., maintenance).
 
-### 2. Gerenciamento de Professores e Disciplinas
+### 2. Teacher and Course Management
 
-- **REQ03**: Permitir o gerenciamento de professores, incluindo nome, CPF, e-mail e disciplinas que leciona.
-- **REQ04**: Permitir o gerenciamento de disciplinas com nome, carga horária semanal e descrição.
+- **REQ03**: Allow teacher management, including name, CPF (Tax ID), email, and the courses they teach.
+- **REQ04**: Allow course management with name, weekly workload, and description.
 
-### 3. Gerenciamento de Turmas
+### 3. Group Management
 
-- **REQ05**: Permitir o gerenciamento de turmas, incluindo identificação única, semestre, turno e lista de alunos.
-- **REQ06**: Cada turma deve estar vinculada a uma disciplina e a um professor responsável.
+- **REQ05**: Allow group management, including a unique ID, semester, shift, and student list.
+- **REQ06**: Each group must be linked to a course and a responsible teacher.
 
-### 4. Definição de Horários
+### 4. Schedule Definition
 
-- **REQ07**: Permitir o cadastro de blocos de horário (ex: 08h–10h, 10h–12h) e dias da semana.
-- **REQ08**: Garantir que uma turma seja alocada apenas em horários disponíveis e compatíveis com a carga horária da disciplina.
-- **REQ09**: Impedir que um professor ou sala sejam alocados em mais de uma turma no mesmo horário.
+- **REQ07**: Allow registration of time blocks (e.g., 08h–10h, 10h–12h) and weekdays.
+- **REQ08**: Ensure that a group is allocated only in available time slots compatible with the course workload.
+- **REQ09**: Prevent a teacher or room from being allocated to more than one group at the same time.
 
-### 5. Alocação de Salas
+### 5. Room Allocation
 
-- **REQ10**: Permitir a alocação de salas a turmas para horários específicos, considerando capacidade mínima e recursos necessários.
-- **REQ11**: Validar a disponibilidade da sala antes de confirmar a alocação.
-- **REQ12**: Permitir alteração da alocação de uma turma, desde que não haja conflito com outra turma no mesmo horário.
+- **REQ10**: Allow the allocation of rooms to groups for specific time slots, considering minimum capacity and required resources.
+- **REQ11**: Validate room availability before confirming the allocation.
+- **REQ12**: Allow modification of a group's allocation, as long as there is no conflict with another group at the same time.
 
-### 6. Consultas e Verificações
+### 6. Queries and Checks
 
-- **REQ13**: Permitir consultar a grade semanal de cada sala, com horários ocupados e livres.
-- **REQ14**: Permitir verificar o horário semanal de cada professor e de cada turma.
-- **REQ15**: Informar conflitos de horário automaticamente ao tentar salvar alocações inconsistentes.
+- **REQ13**: Allow checking the weekly schedule of each room, showing occupied and free time slots.
+- **REQ14**: Allow checking the weekly schedule of each teacher and each group.
+- **REQ15**: Automatically notify scheduling conflicts when attempting to save inconsistent allocations.
 
-### 7. Relatórios e Estatísticas
+### 7. Reports and Statistics
 
-- **REQ16**: Gerar relatórios de uso de salas por período, com taxa de ocupação e horários mais utilizados.
-- **REQ17**: Gerar relatório de distribuição de turmas por turno, professor ou disciplina.
-- **REQ18**: Permitir a exportação dos relatórios em **PDF** e **CSV**, com colunas organizadas, agrupamentos e totais.
+- **REQ16**: Generate reports on room usage by period, including occupancy rates and most used time slots.
+- **REQ17**: Generate reports on group distribution by shift, teacher, or course.
+- **REQ18**: Allow exporting reports in **PDF** and **CSV**, with organized columns, groupings, and totals.
 
-### 8. Regras e Restrições
+### 8. Rules and Constraints
 
-- **REQ19**: A sala atribuída a uma turma deve ter capacidade igual ou superior ao número de alunos da turma.
-- **REQ20**: Uma sala marcada como indisponível não pode ser atribuída a nenhuma turma no período informado.
-- **REQ21**: Professores não podem estar alocados a mais de uma turma no mesmo bloco de horário.
+- **REQ19**: The room assigned to a group must have a capacity equal to or greater than the number of students in the group.
+- **REQ20**: A room marked as unavailable cannot be assigned to any group during the specified period.
+- **REQ21**: Teachers cannot be assigned to more than one group in the same time block.
 
-## Possíveis APIs/Bibliotecas a Serem Usadas
+## Possible APIs/Libraries to Be Used
 
-- **JavaFX** – Interface gráfica do sistema.
-- **JDBC / Hibernate** – Persistência de dados e controle de relacionamentos.
-- **iText / JasperReports** – Exportação de relatórios em PDF.
-- **Apache POI** – Geração de planilhas CSV ou Excel com grade horária ou uso de salas.
-- **JUnit / Mockito** – Testes de lógica de conflito de alocação.
-- **Java Time API** – Manipulação de datas, horários e intervalos.
+- **JavaFX** – System graphical interface.
+- **JDBC / Hibernate** – Data persistence and relationship management.
+- **iText / JasperReports** – Report export in PDF.
+- **Apache POI** – Generation of CSV or Excel spreadsheets with schedules or room usage.
+- **JUnit / Mockito** – Testing of allocation conflict logic.
+- **Java Time API** – Handling dates, times, and intervals.
 
-## Integrantes do grupo com nome completo
-* João Pedro de Araújo Souza - joao.pedroaraujosouza@ufrpe.br 
-* Mario Jorge - mario.jorgeandrade@ufrpe.br 
-* Luiz Maranhão - luiz.maranhao@ufrpe.br
-* Pedro Roma - pedro.roma@ufrpe.br  
+## Group Members with Full Names
+
+- João Pedro de Araújo Souza - joao.pedroaraujosouza@ufrpe.br  
+- Mario Jorge - mario.jorgeandrade@ufrpe.br  
+- Luiz Maranhão - luiz.maranhao@ufrpe.br  
+- Pedro Roma - pedro.roma@ufrpe.br
