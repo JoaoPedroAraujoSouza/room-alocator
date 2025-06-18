@@ -1,7 +1,17 @@
 package org.example.models;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 import java.util.UUID;
+
+@AllArgsConstructor
+@Data
+@Getter
+@Setter
 
 public class Classroom {
     private static long nextId = 1;
@@ -12,13 +22,4 @@ public class Classroom {
     private int studentsQuantity;
     private Teacher teacher;
     private List<TimeAllocation> timeAllocations;
-
-    public Classroom(UUID uuid, String semester, int studentsQuantity, Teacher teacher, List<TimeAllocation> timeAllocations) {
-        this.id = nextId++;
-        this.uuid = uuid;
-        this.semester = semester;
-        this.studentsQuantity = studentsQuantity;
-        this.teacher = teacher;
-        this.timeAllocations = timeAllocations;
-    }
 }

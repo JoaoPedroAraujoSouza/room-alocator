@@ -2,6 +2,15 @@ package org.example.models;
 
 import java.util.List;
 import java.util.UUID;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Setter;
+import lombok.Getter;
+
+@Data
+@AllArgsConstructor
+@Getter
+@Setter
 
 public class Subject {
     private static long nextId = 1;
@@ -11,13 +20,4 @@ public class Subject {
     private String description;
     private String hourlyLoad;
     private List<Teacher> teachers;
-
-    public Subject(UUID uuid, String name, String hourlyLoad, List<Teacher> teachers, String description) {
-        this.id = nextId++;
-        this.uuid = uuid;
-        this.name = name;
-        this.hourlyLoad = hourlyLoad;
-        this.teachers = teachers;
-        this.description = description;
-    }
 }

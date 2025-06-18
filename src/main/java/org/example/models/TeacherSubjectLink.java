@@ -1,6 +1,15 @@
 package org.example.models;
 
 import java.util.UUID;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Setter;
+import lombok.Getter;
+
+@Data
+@AllArgsConstructor
+@Getter
+@Setter
 
 public class TeacherSubjectLink {
     private static long nextId = 1;
@@ -10,13 +19,4 @@ public class TeacherSubjectLink {
     private Subject subject;
     private String semester;
     private boolean active;
-
-    public TeacherSubjectLink(UUID uuid, Teacher teacher, Subject subject, String semester, boolean active) {
-        this.id = nextId++;
-        this.uuid = uuid;
-        this.teacher = teacher;
-        this.subject = subject;
-        this.semester = semester;
-        this.active = active;
-    }
 }

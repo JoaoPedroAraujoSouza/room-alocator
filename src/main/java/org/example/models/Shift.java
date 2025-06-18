@@ -1,5 +1,8 @@
 package org.example.models;
 
+import lombok.Getter;
+
+@Getter
 public enum Shift {
     MORNING("Morning"),
     AFTERNOON("Afternoon"),
@@ -11,7 +14,4 @@ public enum Shift {
         this.displayName = displayName;
     }
 
-    public String getDisplayName() {
-        return displayName;
-    }
 }
