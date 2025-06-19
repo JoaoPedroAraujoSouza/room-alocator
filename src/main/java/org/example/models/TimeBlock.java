@@ -1,5 +1,6 @@
 package org.example.models;
 
+import java.io.Serializable;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import lombok.AllArgsConstructor;
@@ -12,7 +13,8 @@ import lombok.Getter;
 @Getter
 @Setter
 
-public class TimeBlock {
+public class TimeBlock implements Serializable {
+    private static final long serialVersionUID = 1L;
     private static long nextId = 1;
     private final long id;
     private DayOfWeek dayOfWeek;

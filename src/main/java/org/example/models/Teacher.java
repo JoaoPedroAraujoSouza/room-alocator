@@ -1,5 +1,6 @@
 package org.example.models;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -12,7 +13,8 @@ import lombok.Getter;
 @Getter
 @Setter
 
-public class Teacher {
+public class Teacher implements Serializable {
+    private static final long serialVersionUID = 1L;
     private static long nextId = 1;
     private final long id;
     private UUID uuid;
