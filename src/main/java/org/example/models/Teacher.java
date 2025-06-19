@@ -21,6 +21,4 @@ public class Teacher implements Serializable {
     private String name;
     private String cpf;
     private String email;
-    private List<Subject> subjects;
-    private List<Classroom> classrooms;
 }

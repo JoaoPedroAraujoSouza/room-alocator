@@ -21,4 +21,5 @@ public class TeacherSubjectLink implements Serializable {
     private Subject subject;
     private String semester;
     private boolean active;
+    private Classroom classroom;
 }

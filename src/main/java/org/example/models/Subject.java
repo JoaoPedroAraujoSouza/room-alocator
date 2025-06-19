@@ -21,5 +21,4 @@ public class Subject implements Serializable {
     private String name;
     private String description;
     private int hourlyLoad;
-    private List<Teacher> teachers;
 }

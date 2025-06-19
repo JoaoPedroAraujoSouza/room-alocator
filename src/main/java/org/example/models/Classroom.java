@@ -21,8 +21,7 @@ public class Classroom implements Serializable {
     private UUID uuid;
     private String semester;
     private Shift shift;
-    private int studentsQuantity;
-    private Teacher teacher;
+    private int maxStudentsCapacity;
+    private Teacher responsibleTeacher;
     private List<TimeAllocation> timeAllocations;
-    private Subject subject;
 }
