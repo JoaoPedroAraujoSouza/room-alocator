@@ -15,9 +15,7 @@ import lombok.Getter;
 
 public class UnavailabityPeriod implements Serializable {
     private static final long serialVersionUID = 1L;
-    private static long nextId = 1;
-    private final long id;
-    private UUID uuid;
+    private UUID id;
     private LocalTime startDate;
     private LocalTime endDate;
     private String reason;
