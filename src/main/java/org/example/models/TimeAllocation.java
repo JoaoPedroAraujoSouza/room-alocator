@@ -1,17 +1,23 @@
 package org.example.models;
 
+import java.io.Serializable;
 import java.util.UUID;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Setter;
+import lombok.Getter;
 
-public class TimeAllocation {
-    private UUID id;
+@Data
+@AllArgsConstructor
+@Getter
+@Setter
+
+public class TimeAllocation implements Serializable {
+    private static final long serialVersionUID = 1L;
+    private static long nextId = 1;
+    private final long id;
+    private UUID uuid;
     private Classroom classroom;
     private Room room;
-    private TimeBlock timeblock;
-
-    public TimeAllocation(UUID id, Classroom classroom, Room room, TimeBlock timeblock) {
-        this.id = id;
-        this.classroom = classroom;
-        this.room = room;
-        this.timeblock = timeblock;
-    }
+    private TimeBlock timeBlock;
 }

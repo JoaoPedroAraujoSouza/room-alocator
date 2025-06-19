@@ -1,6 +1,11 @@
 package org.example.models;
 
-public enum Shift {
+import lombok.Getter;
+
+import java.io.Serializable;
+
+@Getter
+public enum Shift implements Serializable {
     MORNING("Morning"),
     AFTERNOON("Afternoon"),
     EVENING("Evening");
@@ -11,7 +16,4 @@ public enum Shift {
         this.displayName = displayName;
     }
 
-    public String getDisplayName() {
-        return displayName;
-    }
 }
