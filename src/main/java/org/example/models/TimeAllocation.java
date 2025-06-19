@@ -14,7 +14,9 @@ import lombok.Getter;
 
 public class TimeAllocation implements Serializable {
     private static final long serialVersionUID = 1L;
-    private UUID id;
+    private static long nextId = 1;
+    private final long id;
+    private UUID uuid;
     private Classroom classroom;
     private Room room;
     private TimeBlock timeBlock;

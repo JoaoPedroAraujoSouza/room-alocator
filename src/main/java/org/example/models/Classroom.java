@@ -16,7 +16,9 @@ import java.util.UUID;
 
 public class Classroom implements Serializable {
     private static final long serialVersionUID = 1L;
-    private UUID id;
+    private static long nextId = 1;
+    private final long id;
+    private UUID uuid;
     private String semester;
     private Shift shift;
     private int maxStudentsCapacity;

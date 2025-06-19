@@ -1,3 +1,4 @@
+// src/main/java/org/example/models/Room.java
 package org.example.models;
 
 import lombok.AllArgsConstructor;
@@ -15,7 +16,9 @@ import java.util.UUID;
 @Setter
 public class Room implements Serializable {
     private static final long serialVersionUID = 1L;
-    private UUID id;
+    private static long nextId = 1;
+    private final long id;
+    private UUID uuid;
     private String name;
     private String localization;
     private int capacity;

@@ -15,7 +15,9 @@ import lombok.Getter;
 
 public class Teacher implements Serializable {
     private static final long serialVersionUID = 1L;
-    private UUID id;
+    private static long nextId = 1;
+    private final long id;
+    private UUID uuid;
     private String name;
     private String cpf;
     private String email;
