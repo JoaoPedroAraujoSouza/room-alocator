@@ -1,5 +1,18 @@
 package org.example.controller.ui.EditPopUp;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.List;
+import java.util.ResourceBundle;
+import java.util.regex.Pattern;
+
+import org.example.controller.ui.DashBoardTeacherController;
+import org.example.models.Teacher;
+import org.example.models.TeacherSubjectLink;
+import org.example.service.TeacherService;
+import org.example.service.TeacherSubjectLinkService;
+
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -9,20 +22,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-import javafx.beans.property.SimpleStringProperty;
-import org.example.models.Teacher;
-import org.example.models.TeacherSubjectLink;
-import org.example.service.TeacherService;
-import org.example.service.TeacherSubjectLinkService;
-import org.example.controller.ui.DashBoardTeacherController;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.regex.Pattern;
 
 public class EditTeacherDialogController implements Initializable {
     
@@ -69,7 +69,6 @@ public class EditTeacherDialogController implements Initializable {
     }
     
     private void setupSubjectLinksTable() {
-        // Configure subject links table columns
         columnSubjectName.setCellValueFactory(cellData -> {
             return new SimpleStringProperty(
                 cellData.getValue().getSubject() != null ? cellData.getValue().getSubject().getName() : "Not assigned"
@@ -93,8 +92,7 @@ public class EditTeacherDialogController implements Initializable {
                 cellData.getValue().getSemester() : "Not assigned"
             );
         });
-        
-        // Set table data
+
         tableSubjectLinks.setItems(subjectLinkList);
     }
     
@@ -121,8 +119,7 @@ public class EditTeacherDialogController implements Initializable {
             subjectLinkList.clear();
             return;
         }
-        
-        // Filter subject links by teacher
+
         List<TeacherSubjectLink> allLinks = teacherSubjectLinkService.getAll();
         List<TeacherSubjectLink> teacherLinks = allLinks.stream()
             .filter(link -> link.getTeacher() != null && 
@@ -162,14 +159,12 @@ public class EditTeacherDialogController implements Initializable {
     }
     
     private boolean validateInputs() {
-        // Validate name
         if (nameField.getText().trim().isEmpty()) {
             showAlert("Validation Error", "Name is required.", Alert.AlertType.ERROR);
             nameField.requestFocus();
             return false;
         }
-        
-        // Validate CPF
+
         String cpf = cpfField.getText().trim();
         if (cpf.isEmpty()) {
             showAlert("Validation Error", "CPF is required.", Alert.AlertType.ERROR);
@@ -177,14 +172,12 @@ public class EditTeacherDialogController implements Initializable {
             return false;
         }
         
-        // CPF format validation (Brazilian CPF format)
         if (!isValidCPF(cpf)) {
             showAlert("Validation Error", "Please enter a valid CPF format (e.g., 123.456.789-00).", Alert.AlertType.ERROR);
             cpfField.requestFocus();
             return false;
         }
-        
-        // Validate email
+
         String email = emailField.getText().trim();
         if (email.isEmpty()) {
             showAlert("Validation Error", "Email is required.", Alert.AlertType.ERROR);
@@ -202,20 +195,16 @@ public class EditTeacherDialogController implements Initializable {
     }
     
     private boolean isValidCPF(String cpf) {
-        // Remove non-numeric characters
         String cleanCPF = cpf.replaceAll("[^0-9]", "");
         
-        // Check if it has 11 digits
         if (cleanCPF.length() != 11) {
             return false;
         }
         
-        // Check if all digits are the same (invalid CPF)
         if (cleanCPF.matches("(\\d)\\1{10}")) {
             return false;
         }
         
-        // Basic format validation for display
         return cpf.matches("\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}");
     }
     

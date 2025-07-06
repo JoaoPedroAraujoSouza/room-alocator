@@ -1,19 +1,20 @@
 package org.example.controller.ui.AddPopUp;
 
+import java.net.URL;
+import java.util.ResourceBundle;
+import java.util.UUID;
+
+import org.example.models.Subject;
+
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import org.example.models.Subject;
-import javafx.scene.control.ButtonType;
-
-import java.net.URL;
-import java.util.ResourceBundle;
-import java.util.UUID;
 
 public class AddSubjectDialogController implements Initializable {
     @FXML
@@ -33,11 +34,8 @@ public class AddSubjectDialogController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Configura spinner de créditos
         creditsSpinner.setValueFactory(new javafx.scene.control.SpinnerValueFactory.IntegerSpinnerValueFactory(1, 20, 4));
-        // Validação inicial
         validateForm();
-        // Listeners para validação
         nameField.textProperty().addListener((obs, oldVal, newVal) -> validateForm());
         codeField.textProperty().addListener((obs, oldVal, newVal) -> validateForm());
         creditsSpinner.valueProperty().addListener((obs, oldVal, newVal) -> validateForm());

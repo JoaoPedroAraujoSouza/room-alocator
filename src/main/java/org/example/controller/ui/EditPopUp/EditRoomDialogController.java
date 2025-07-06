@@ -6,19 +6,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.example.controller.ui.DashBoardRoomsController;
 import org.example.models.Room;
 import org.example.models.UnavailabityPeriod;
 import org.example.service.RoomService;
-import org.example.controller.ui.DashBoardRoomsController;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 
 public class EditRoomDialogController {
@@ -78,13 +78,11 @@ public class EditRoomDialogController {
     @FXML
     public void initialize() {
         roomService = new RoomService();
-        
-        // Initialize lists
+
         resourcesList = FXCollections.observableArrayList();
         periodsList = FXCollections.observableArrayList();
         unavailabilityPeriods = new ArrayList<>();
-        
-        // Set up display areas
+
         updateResourcesDisplay();
         updatePeriodsDisplay();
     }
@@ -95,26 +93,21 @@ public class EditRoomDialogController {
 
     public void setRoomForEditing(Room room) {
         this.roomBeingEdited = room;
-        
-        // Preencher campos com dados da sala para edição
+
         txtRoomName.setText(room.getName());
         txtLocalization.setText(room.getLocalization());
         txtCapacity.setText(String.valueOf(room.getCapacity()));
-        
-        // Preencher recursos
+
         resourcesList.clear();
         if (room.getResources() != null) {
             resourcesList.addAll(room.getResources());
         }
-        
-        // Preencher períodos de indisponibilidade
+
         periodsList.clear();
         unavailabilityPeriods.clear();
         if (room.getUnavailabilityPeriods() != null) {
             for (UnavailabityPeriod period : room.getUnavailabilityPeriods()) {
                 unavailabilityPeriods.add(period);
-                // Convert LocalTime back to dd/mm format for display
-                // Decode hour:minute back to day:month
                 int startDay = period.getStartDate().getHour() + 1;
                 int startMonth = period.getStartDate().getMinute() + 1;
                 int endDay = period.getEndDate().getHour() + 1;
@@ -126,21 +119,18 @@ public class EditRoomDialogController {
                 periodsList.add(periodDisplay);
             }
         }
-        
-        // Atualizar displays
+
         updateResourcesDisplay();
         updatePeriodsDisplay();
     }
 
     @FXML
     private void handleUpdate() {
-        // Validar campos
         if (!validateFields()) {
             return;
         }
 
         try {
-            // Atualizar sala existente
             roomBeingEdited.setName(txtRoomName.getText().trim());
             roomBeingEdited.setLocalization(txtLocalization.getText().trim());
             roomBeingEdited.setCapacity(Integer.parseInt(txtCapacity.getText().trim()));
@@ -148,16 +138,13 @@ public class EditRoomDialogController {
             roomBeingEdited.setUnavailabilityPeriods(new ArrayList<>(unavailabilityPeriods));
             
             roomService.update(roomBeingEdited);
-            
-            // Atualizar na tabela do controller pai
+
             if (parentController != null) {
                 parentController.updateRoomInTable(roomBeingEdited);
             }
-            
-            // Fechar o pop-up
+
             closeDialog();
-            
-            // Mostrar mensagem de sucesso
+
             showAlert(AlertType.INFORMATION, "Success", "Room updated successfully!");
 
         } catch (IOException e) {
@@ -173,7 +160,6 @@ public class EditRoomDialogController {
         closeDialog();
     }
 
-    // Resource management methods
     @FXML
     private void handleAddResource() {
         String resource = txtResource.getText().trim();
@@ -200,7 +186,6 @@ public class EditRoomDialogController {
         updateResourcesDisplay();
     }
 
-    // Unavailability period management methods
     @FXML
     private void handleAddPeriod() {
         String startDayStr = txtStartDay.getText().trim();
@@ -213,7 +198,7 @@ public class EditRoomDialogController {
         }
 
         try {
-            // Parse day format (dd/mm)
+
             String[] startParts = startDayStr.split("/");
             String[] endParts = endDayStr.split("/");
             
@@ -225,24 +210,18 @@ public class EditRoomDialogController {
             int startMonth = Integer.parseInt(startParts[1]);
             int endDay = Integer.parseInt(endParts[0]);
             int endMonth = Integer.parseInt(endParts[1]);
-            
-            // Basic validation for days and months
+
             if (startDay < 1 || startDay > 31 || endDay < 1 || endDay > 31 ||
                 startMonth < 1 || startMonth > 12 || endMonth < 1 || endMonth > 12) {
                 showAlert(AlertType.WARNING, "Validation Error", "Invalid day or month values.");
                 return;
             }
-            
-            // Check if start date is before end date
+
             if (startMonth > endMonth || (startMonth == endMonth && startDay > endDay)) {
                 showAlert(AlertType.WARNING, "Validation Error", "Start date must be before end date.");
                 return;
             }
 
-            // Create unavailability period (using LocalTime for compatibility with existing model)
-            // We'll encode day:month as hour:minute
-            // Day 1-31 -> Hour 0-23 (using modulo 24)
-            // Month 1-12 -> Minute 0-59 (using modulo 60)
             int startHour = (startDay - 1) % 24;
             int startMinute = (startMonth - 1) % 60;
             int endHour = (endDay - 1) % 24;
@@ -260,12 +239,10 @@ public class EditRoomDialogController {
             );
 
             unavailabilityPeriods.add(period);
-            
-            // Add to display list
+
             String periodDisplay = String.format("%s - %s: %s", startDayStr, endDayStr, reason);
             periodsList.add(periodDisplay);
 
-            // Clear fields
             txtStartDay.clear();
             txtEndDay.clear();
             txtReason.clear();

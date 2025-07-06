@@ -33,7 +33,6 @@ public class EditTeacherSubjectLinkDialogController implements Initializable {
         // Preencher ComboBoxes com dados reais
         teacherComboBox.getItems().setAll(teacherService.getAllTeachers());
         classroomComboBox.getItems().setAll(classroomService.getAllClassrooms());
-        System.out.println("[LOG] Teacher and Classroom ComboBoxes populated with real data.");
     }
 
     public void setLink(TeacherSubjectLink link) {
@@ -54,7 +53,6 @@ public class EditTeacherSubjectLinkDialogController implements Initializable {
             boolean active = activeCheckBox.isSelected();
             Classroom classroom = classroomComboBox.getValue();
             if (teacher == null || semester.isEmpty() || classroom == null) {
-                System.out.println("[LOG] Validation failed: All fields must be filled.");
                 return;
             }
             linkToEdit.setTeacher(teacher);
@@ -62,7 +60,6 @@ public class EditTeacherSubjectLinkDialogController implements Initializable {
             linkToEdit.setActive(active);
             linkToEdit.setClassroom(classroom);
             updated = true;
-            System.out.println("[LOG] Updated TeacherSubjectLink: " + linkToEdit);
         }
         closeDialog();
     }
@@ -70,7 +67,6 @@ public class EditTeacherSubjectLinkDialogController implements Initializable {
     @FXML
     private void handleCancel() {
         updated = false;
-        System.out.println("[LOG] EditTeacherSubjectLinkDialog canceled by user.");
         closeDialog();
     }
 

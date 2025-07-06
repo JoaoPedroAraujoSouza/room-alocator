@@ -1,19 +1,20 @@
 package org.example.controller.ui.AddPopUp;
 
-import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
-import javafx.stage.Stage;
-import org.example.models.Teacher;
-import org.example.service.TeacherService;
-import org.example.controller.ui.DashBoardTeacherController;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
-
 import java.io.IOException;
 import java.util.UUID;
 import java.util.regex.Pattern;
+
+import org.example.controller.ui.DashBoardTeacherController;
+import org.example.models.Teacher;
+import org.example.service.TeacherService;
+
+import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 public class AddTeacherDialogController {
     
@@ -44,7 +45,7 @@ public class AddTeacherDialogController {
         if (validateInputs()) {
             try {
                 Teacher teacher = new Teacher(
-                    Teacher.getNextId(), // Use the correct ID generation method
+                    Teacher.getNextId(), 
                     UUID.randomUUID(),
                     nameField.getText().trim(),
                     cpfField.getText().trim(),

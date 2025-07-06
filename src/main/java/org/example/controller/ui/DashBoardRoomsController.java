@@ -2,37 +2,34 @@ package org.example.controller.ui;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.UUID;
 
+import org.example.controller.ui.AddPopUp.AddRoomDialogController;
+import org.example.controller.ui.EditPopUp.EditRoomDialogController;
 import org.example.models.Room;
+import org.example.models.TimeAllocation;
+import org.example.models.UnavailabityPeriod;
 import org.example.service.RoomService;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.beans.property.SimpleStringProperty;
-import org.example.models.UnavailabityPeriod;
-import org.example.models.TimeAllocation;
-import org.example.controller.ui.AddPopUp.AddRoomDialogController;
-import org.example.controller.ui.EditPopUp.EditRoomDialogController;
-import javafx.scene.control.Button;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.layout.HBox;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
-import javafx.scene.control.TableRow;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class DashBoardRoomsController extends BaseDashboardController implements Initializable {
 
@@ -62,8 +59,7 @@ public class DashBoardRoomsController extends BaseDashboardController implements
     @FXML
     private TextField txtSearch;
 
-    @FXML
-    private Button btnSearch;
+
 
     private ObservableList<Room> listRooms;
     private ObservableList<Room> filteredRooms;
@@ -74,7 +70,6 @@ public class DashBoardRoomsController extends BaseDashboardController implements
         columnLocalization.setCellValueFactory(new PropertyValueFactory<>("localization"));
         columnCapacity.setCellValueFactory(new PropertyValueFactory<>("capacity"));
         
-        // Configure custom cell value factories for resources and unavailability
         columnResources.setCellValueFactory(cellData -> {
             Room room = cellData.getValue();
             String resourcesText = formatResources(room.getResources());
@@ -93,7 +88,6 @@ public class DashBoardRoomsController extends BaseDashboardController implements
             return new SimpleStringProperty(allocationsText);
         });
 
-        // Configure actions column
         columnActions.setCellFactory(col -> new TableCell<Room, Void>() {
             private final Button editButton = new Button("Edit");
             private final Button deleteButton = new Button("Delete");
@@ -126,13 +120,11 @@ public class DashBoardRoomsController extends BaseDashboardController implements
         filteredRooms = FXCollections.observableArrayList();
 
         tableRoom.setItems(filteredRooms);
-        
-        // Configurar busca em tempo real
+
         txtSearch.textProperty().addListener((observable, oldValue, newValue) -> {
             filterRooms();
         });
         
-        // Carregar salas existentes
         loadExistingRooms();
     }
     
@@ -141,7 +133,7 @@ public class DashBoardRoomsController extends BaseDashboardController implements
         try {
             List<Room> existingRooms = roomService.getAll();
             listRooms.addAll(existingRooms);
-            filterRooms(); // Aplicar filtro inicial
+            filterRooms(); 
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -149,15 +141,12 @@ public class DashBoardRoomsController extends BaseDashboardController implements
 
     public void CreateRoom() {
         try {
-            // Carregar o FXML do pop-up
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/view/AddPopUp/AddRoomDialog.fxml"));
             Scene scene = new Scene(loader.load());
             
-            // Obter o controller do pop-up
             AddRoomDialogController dialogController = loader.getController();
             dialogController.setParentController(this);
-            
-            // Criar e configurar a janela do pop-up
+
             Stage dialogStage = new Stage();
             dialogStage.setTitle("Add New Room");
             dialogStage.setScene(scene);
@@ -165,8 +154,7 @@ public class DashBoardRoomsController extends BaseDashboardController implements
             dialogStage.setResizable(false);
             dialogStage.setMinWidth(520);
             dialogStage.setMinHeight(650);
-            
-            // Mostrar o pop-up
+    
             dialogStage.showAndWait();
             
         } catch (IOException e) {
@@ -176,32 +164,29 @@ public class DashBoardRoomsController extends BaseDashboardController implements
     
     public void addRoomToTable(Room room) {
         listRooms.add(room);
-        filterRooms(); // Aplicar filtro após adicionar nova sala
+        filterRooms(); 
     }
     
     public void updateRoomInTable(Room room) {
-        // Encontrar e atualizar a sala na lista
         for (int i = 0; i < listRooms.size(); i++) {
             if (listRooms.get(i).getId() == room.getId()) {
                 listRooms.set(i, room);
                 break;
             }
         }
-        filterRooms(); // Aplicar filtro após atualizar
+        filterRooms();
     }
     
     private void editRoom(Room room) {
         try {
-            // Carregar o FXML da tela de edição
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/view/EditPopUp/EditRoomDialog.fxml"));
             Scene scene = new Scene(loader.load());
-            
-            // Obter o controller da tela de edição
+
             EditRoomDialogController dialogController = loader.getController();
             dialogController.setParentController(this);
-            dialogController.setRoomForEditing(room); // Preencher dados para edição
+            dialogController.setRoomForEditing(room);
             
-            // Criar e configurar a janela do pop-up
+
             Stage dialogStage = new Stage();
             dialogStage.setTitle("Edit Room");
             dialogStage.setScene(scene);
@@ -209,8 +194,7 @@ public class DashBoardRoomsController extends BaseDashboardController implements
             dialogStage.setResizable(false);
             dialogStage.setMinWidth(520);
             dialogStage.setMinHeight(650);
-            
-            // Mostrar o pop-up
+
             dialogStage.showAndWait();
             
         } catch (IOException e) {
@@ -229,11 +213,9 @@ public class DashBoardRoomsController extends BaseDashboardController implements
                 try {
                     RoomService roomService = new RoomService();
                     roomService.deleteById(room.getId());
-                    
-                    // Remove from table
+
                     listRooms.remove(room);
-                    filterRooms(); // Aplicar filtro após remover
-                    
+                    filterRooms(); 
                     showAlert(AlertType.INFORMATION, "Success", "Room deleted successfully!");
                     
                 } catch (IOException e) {
@@ -267,8 +249,7 @@ public class DashBoardRoomsController extends BaseDashboardController implements
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < periods.size(); i++) {
             UnavailabityPeriod period = periods.get(i);
-                            // Convert LocalTime back to dd/mm format for display
-                // Decode hour:minute back to day:month
+
                 int startDay = period.getStartDate().getHour() + 1;
                 int startMonth = period.getStartDate().getMinute() + 1;
                 int endDay = period.getEndDate().getHour() + 1;
@@ -294,7 +275,6 @@ public class DashBoardRoomsController extends BaseDashboardController implements
         for (int i = 0; i < allocations.size(); i++) {
             TimeAllocation allocation = allocations.get(i);
             
-            // Format allocation info
             String classroomInfo = allocation.getClassroom() != null ? 
                 "Semester: " + allocation.getClassroom().getSemester() : "Unknown";
             String timeBlockInfo = allocation.getTimeBlock() != null ? 
@@ -310,26 +290,18 @@ public class DashBoardRoomsController extends BaseDashboardController implements
         return sb.toString();
     }
 
-    /**
-     * Método chamado quando o botão Search é clicado
-     */
     @FXML
     private void handleSearch() {
         filterRooms();
     }
 
-    /**
-     * Filtra as salas baseado no texto de busca
-     */
     private void filterRooms() {
         String searchText = txtSearch.getText().toLowerCase().trim();
         
         if (searchText.isEmpty()) {
-            // Se não há texto de busca, mostrar todas as salas
             filteredRooms.clear();
             filteredRooms.addAll(listRooms);
         } else {
-            // Filtrar salas que correspondem ao texto de busca
             filteredRooms.clear();
             for (Room room : listRooms) {
                 if (matchesSearch(room, searchText)) {
@@ -341,21 +313,16 @@ public class DashBoardRoomsController extends BaseDashboardController implements
         tableRoom.refresh();
     }
 
-    /**
-     * Verifica se uma sala corresponde ao texto de busca
-     */
     private boolean matchesSearch(Room room, String searchText) {
-        // Buscar por nome
+
         if (room.getName() != null && room.getName().toLowerCase().contains(searchText)) {
             return true;
         }
         
-        // Buscar por localização
         if (room.getLocalization() != null && room.getLocalization().toLowerCase().contains(searchText)) {
             return true;
         }
-        
-        // Buscar por recursos
+
         if (room.getResources() != null) {
             for (String resource : room.getResources()) {
                 if (resource.toLowerCase().contains(searchText)) {
@@ -363,8 +330,7 @@ public class DashBoardRoomsController extends BaseDashboardController implements
                 }
             }
         }
-        
-        // Buscar por capacidade (se o texto for numérico)
+
         if (searchText.matches("\\d+")) {
             int capacity = Integer.parseInt(searchText);
             if (room.getCapacity() == capacity) {

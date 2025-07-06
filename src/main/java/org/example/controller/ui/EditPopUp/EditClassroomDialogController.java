@@ -1,12 +1,9 @@
 package org.example.controller.ui.EditPopUp;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Stage;
-import javafx.beans.property.SimpleStringProperty;
+import java.io.IOException;
+import java.util.List;
+
+import org.example.controller.ui.DashBoardClassroomController;
 import org.example.models.Classroom;
 import org.example.models.Shift;
 import org.example.models.Teacher;
@@ -14,10 +11,21 @@ import org.example.models.TimeAllocation;
 import org.example.service.ClassroomService;
 import org.example.service.TeacherService;
 import org.example.service.TimeAllocationService;
-import org.example.controller.ui.DashBoardClassroomController;
 
-import java.io.IOException;
-import java.util.List;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 public class EditClassroomDialogController {
 
@@ -154,7 +162,6 @@ public class EditClassroomDialogController {
             return;
         }
         
-        // Filter allocations by classroom
         List<TimeAllocation> allAllocations = timeAllocationService.getAll();
         List<TimeAllocation> classroomAllocations = allAllocations.stream()
             .filter(allocation -> allocation.getClassroom() != null && 
@@ -166,7 +173,6 @@ public class EditClassroomDialogController {
     }
     
     private void setupValidation() {
-        // Enable save button only when all fields are filled
         saveButton.setDisable(true);
         
         semesterField.textProperty().addListener((observable, oldValue, newValue) -> validateForm());

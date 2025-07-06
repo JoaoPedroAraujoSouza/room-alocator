@@ -3,25 +3,24 @@ package org.example.controller.ui.AddPopUp;
 import java.io.IOException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.example.controller.ui.DashBoardRoomsController;
 import org.example.models.Room;
 import org.example.models.UnavailabityPeriod;
 import org.example.service.RoomService;
-import org.example.controller.ui.DashBoardRoomsController;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 
 public class AddRoomDialogController {
@@ -81,13 +80,11 @@ public class AddRoomDialogController {
     @FXML
     public void initialize() {
         roomService = new RoomService();
-        
-        // Initialize lists
+
         resourcesList = FXCollections.observableArrayList();
         periodsList = FXCollections.observableArrayList();
         unavailabilityPeriods = new ArrayList<>();
         
-        // Set up display areas
         updateResourcesDisplay();
         updatePeriodsDisplay();
     }
@@ -98,39 +95,37 @@ public class AddRoomDialogController {
 
     @FXML
     private void handleSave() {
-        // Validar campos
         if (!validateFields()) {
             return;
         }
 
         try {
-            // Criar nova sala
             Room newRoom = new Room(
-                Room.getNextId(), // id
-                UUID.randomUUID(), // uuid
-                txtRoomName.getText().trim(), // name
-                txtLocalization.getText().trim(), // localization
-                Integer.parseInt(txtCapacity.getText().trim()), // capacity
-                new ArrayList<>(resourcesList), // resources
-                new ArrayList<>(unavailabilityPeriods), // unavailabilityPeriods
-                new ArrayList<>()  // timeAllocations
+                Room.getNextId(), 
+                UUID.randomUUID(), 
+                txtRoomName.getText().trim(), 
+                txtLocalization.getText().trim(), 
+                Integer.parseInt(txtCapacity.getText().trim()), 
+                new ArrayList<>(resourcesList),
+                new ArrayList<>(unavailabilityPeriods), 
+                new ArrayList<>()  
             );
 
-            // Salvar no service/repository
+          
             roomService.add(newRoom);
 
-            // Adicionar à tabela do controller pai
+  
             if (parentController != null) {
                 parentController.addRoomToTable(newRoom);
             }
 
-            // Mostrar mensagem de sucesso
+
             Alert alert = new Alert(AlertType.INFORMATION, "Room added successfully!", ButtonType.OK);
             alert.setHeaderText(null);
             alert.setTitle("Success");
             alert.showAndWait();
 
-            // Fechar o pop-up
+
             closeDialog();
 
         } catch (IOException e) {
@@ -146,7 +141,7 @@ public class AddRoomDialogController {
         closeDialog();
     }
 
-    // Resource management methods
+
     @FXML
     private void handleAddResource() {
         String resource = txtResource.getText().trim();
@@ -173,7 +168,6 @@ public class AddRoomDialogController {
         updateResourcesDisplay();
     }
 
-    // Unavailability period management methods
     @FXML
     private void handleAddPeriod() {
         String startDayStr = txtStartDay.getText().trim();
@@ -186,7 +180,6 @@ public class AddRoomDialogController {
         }
 
         try {
-            // Parse day format (dd/mm)
             String[] startParts = startDayStr.split("/");
             String[] endParts = endDayStr.split("/");
             
@@ -199,23 +192,17 @@ public class AddRoomDialogController {
             int endDay = Integer.parseInt(endParts[0]);
             int endMonth = Integer.parseInt(endParts[1]);
             
-            // Basic validation for days and months
             if (startDay < 1 || startDay > 31 || endDay < 1 || endDay > 31 ||
                 startMonth < 1 || startMonth > 12 || endMonth < 1 || endMonth > 12) {
                 showAlert(AlertType.WARNING, "Validation Error", "Invalid day or month values.");
                 return;
             }
-            
-            // Check if start date is before end date
+
             if (startMonth > endMonth || (startMonth == endMonth && startDay > endDay)) {
                 showAlert(AlertType.WARNING, "Validation Error", "Start date must be before end date.");
                 return;
             }
 
-            // Create unavailability period (using LocalTime for compatibility with existing model)
-            // We'll encode day:month as hour:minute
-            // Day 1-31 -> Hour 0-23 (using modulo 24)
-            // Month 1-12 -> Minute 0-59 (using modulo 60)
             int startHour = (startDay - 1) % 24;
             int startMinute = (startMonth - 1) % 60;
             int endHour = (endDay - 1) % 24;
@@ -234,11 +221,9 @@ public class AddRoomDialogController {
 
             unavailabilityPeriods.add(period);
             
-            // Add to display list
             String periodDisplay = String.format("%s - %s: %s", startDayStr, endDayStr, reason);
             periodsList.add(periodDisplay);
 
-            // Clear fields
             txtStartDay.clear();
             txtEndDay.clear();
             txtReason.clear();

@@ -1,5 +1,19 @@
 package org.example.controller.ui;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.List;
+import java.util.ResourceBundle;
+
+import org.example.controller.ui.AddPopUp.AddTeacherDialogController;
+import org.example.controller.ui.EditPopUp.EditTeacherDialogController;
+import org.example.models.Teacher;
+import org.example.models.TeacherSubjectLink;
+import org.example.service.SubjectService;
+import org.example.service.TeacherService;
+import org.example.service.TeacherSubjectLinkService;
+
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -8,30 +22,19 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.beans.property.SimpleStringProperty;
-import org.example.models.Teacher;
-import org.example.models.Subject;
-import org.example.models.TeacherSubjectLink;
-import org.example.service.TeacherService;
-import org.example.service.SubjectService;
-import org.example.service.TeacherSubjectLinkService;
-import org.example.controller.ui.AddPopUp.AddTeacherDialogController;
-import org.example.controller.ui.EditPopUp.EditTeacherDialogController;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.List;
-import java.util.ResourceBundle;
 
-/**
- * Controller para a tela de Professores do Dashboard
- * Estende BaseDashboardController para herdar métodos de navegação
- */
 public class DashBoardTeacherController extends BaseDashboardController implements Initializable {
 
     @FXML
@@ -55,8 +58,7 @@ public class DashBoardTeacherController extends BaseDashboardController implemen
     @FXML
     private TextField txtSearch;
     
-    @FXML
-    private Button btnSearch;
+
     
     private TeacherService teacherService = new TeacherService();
     private SubjectService subjectService = new SubjectService();
@@ -72,12 +74,10 @@ public class DashBoardTeacherController extends BaseDashboardController implemen
     }
     
     private void setupTable() {
-        // Configure table columns
         columnName.setCellValueFactory(new PropertyValueFactory<>("name"));
         columnCpf.setCellValueFactory(new PropertyValueFactory<>("cpf"));
         columnEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
         
-        // Setup subject links column
         columnSubjectLinks.setCellValueFactory(cellData -> {
             Teacher teacher = cellData.getValue();
             List<TeacherSubjectLink> links = teacherSubjectLinkService.getAll().stream()
@@ -93,10 +93,8 @@ public class DashBoardTeacherController extends BaseDashboardController implemen
             }
         });
         
-        // Setup actions column
         setupActionsColumn();
-        
-        // Set table data
+
         filteredTeacherList = new FilteredList<>(teacherList, p -> true);
         tableTeacher.setItems(filteredTeacherList);
     }
@@ -215,10 +213,7 @@ public class DashBoardTeacherController extends BaseDashboardController implemen
         });
     }
     
-    @FXML
-    private void handleSearch() {
-        // Search functionality is handled by the text property listener
-    }
+
     
     private void showAlert(String title, String content, Alert.AlertType alertType) {
         Alert alert = new Alert(alertType);
@@ -233,6 +228,6 @@ public class DashBoardTeacherController extends BaseDashboardController implemen
     }
     
     public void updateTeacherInTable(Teacher teacher) {
-        // The table will automatically update due to the observable list
+
     }
 } 

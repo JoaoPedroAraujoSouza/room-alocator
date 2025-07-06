@@ -1,43 +1,39 @@
 package org.example.controller.ui;
 
-import javafx.fxml.Initializable;
+import java.io.IOException;
 import java.net.URL;
-import java.util.ResourceBundle;
 import java.util.ArrayList;
 import java.util.List;
-import javafx.fxml.FXML;
-import org.example.models.Subject;
-import org.example.service.SubjectService;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseEvent;
-import java.util.UUID;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
+import java.util.ResourceBundle;
+
 import org.example.controller.ui.AddPopUp.AddSubjectDialogController;
-import org.example.controller.ui.EditPopUp.EditSubjectDialogController;
-import java.io.IOException;
-import org.example.models.TeacherSubjectLink;
-import org.example.models.Teacher;
-import org.example.models.Classroom;
-import javafx.scene.layout.VBox;
 import org.example.controller.ui.AddPopUp.AddTeacherSubjectLinkDialogController;
+import org.example.controller.ui.EditPopUp.EditSubjectDialogController;
 import org.example.controller.ui.EditPopUp.EditTeacherSubjectLinkDialogController;
+import org.example.models.Subject;
+import org.example.models.TeacherSubjectLink;
+import org.example.service.SubjectService;
 import org.example.service.TeacherSubjectLinkService;
 
-/**
- * Controller para a tela de Disciplinas do Dashboard
- * Estende BaseDashboardController para herdar métodos de navegação
- */
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+
+
 public class DashBoardSubjectController extends BaseDashboardController implements Initializable {
 
     private ObservableList<Subject> subjectList = FXCollections.observableArrayList();
@@ -54,7 +50,7 @@ public class DashBoardSubjectController extends BaseDashboardController implemen
     @FXML private TableColumn<Subject, Void> columnActions;
 
     @FXML private TextField txtSearch;
-    @FXML private Button btnSearch;
+
 
     @FXML private VBox linkSection;
     @FXML private TableView<TeacherSubjectLink> linkTable;
@@ -76,7 +72,6 @@ public class DashBoardSubjectController extends BaseDashboardController implemen
         columnDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
         columnHourlyLoad.setCellValueFactory(new PropertyValueFactory<>("hourlyLoad"));
         
-        // Configure actions column
         columnActions.setCellFactory(col -> new TableCell<Subject, Void>() {
             private final Button editButton = new Button("Edit");
             private final Button deleteButton = new Button("Delete");
@@ -106,23 +101,19 @@ public class DashBoardSubjectController extends BaseDashboardController implemen
         });
 
         subjectTable.setItems(filteredSubjects);
-        
-        // Configure search functionality
+
         txtSearch.textProperty().addListener((observable, oldValue, newValue) -> {
             filterSubjects();
         });
         
-        // Load existing subjects
         loadExistingSubjects();
 
-        // Configuração da tabela de vínculos
         columnTeacherName.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(
-            cellData.getValue().getTeacher() != null ? cellData.getValue().getTeacher().getName() : ""));
+        cellData.getValue().getTeacher() != null ? cellData.getValue().getTeacher().getName() : ""));
         columnSemester.setCellValueFactory(new PropertyValueFactory<>("semester"));
         columnActive.setCellValueFactory(new PropertyValueFactory<>("active"));
         columnClassroom.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(
             cellData.getValue().getClassroom() != null ? cellData.getValue().getClassroom().getSemester() : ""));
-        // Ações de vínculo (editar/remover)
         columnLinkActions.setCellFactory(col -> new TableCell<TeacherSubjectLink, Void>() {
             private final Button editButton = new Button("Editar");
             private final Button deleteButton = new Button("Remover");
@@ -154,7 +145,7 @@ public class DashBoardSubjectController extends BaseDashboardController implemen
         try {
             List<Subject> existingSubjects = subjectService.getAllSubjects();
             subjectList.addAll(existingSubjects);
-            filterSubjects(); // Apply initial filter
+            filterSubjects(); 
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -189,7 +180,6 @@ public class DashBoardSubjectController extends BaseDashboardController implemen
     private void handleSubjectSelection(MouseEvent event) {
         selectedSubject = subjectTable.getSelectionModel().getSelectedItem();
         if (selectedSubject != null) {
-            // Carregar vínculos do Subject selecionado (mock ou service)
             linkList.setAll(loadLinksForSubject(selectedSubject));
             linkSection.setVisible(true);
             linkSection.setManaged(true);
@@ -258,7 +248,7 @@ public class DashBoardSubjectController extends BaseDashboardController implemen
     private void handleDeleteSubject(Subject subject) {
         if (subject == null) return;
         subjectList.remove(subject);
-        filterSubjects(); // Apply filter after removing subject
+        filterSubjects(); 
         selectedSubject = null;
         subjectTable.refresh();
     }

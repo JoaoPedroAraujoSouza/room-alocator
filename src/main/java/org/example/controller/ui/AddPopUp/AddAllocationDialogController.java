@@ -1,22 +1,5 @@
 package org.example.controller.ui.AddPopUp;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Stage;
-import org.example.controller.ui.DashBoardAllocationsController;
-import org.example.models.TimeAllocation;
-import org.example.models.Classroom;
-import org.example.models.Room;
-import org.example.models.TimeBlock;
-import org.example.service.ClassroomService;
-import org.example.service.RoomService;
-import org.example.service.TimeBlockService;
-import org.example.service.TimeAllocationService;
-
 import java.io.IOException;
 import java.net.URL;
 import java.time.DayOfWeek;
@@ -24,6 +7,28 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
+
+import org.example.controller.ui.DashBoardAllocationsController;
+import org.example.models.Classroom;
+import org.example.models.Room;
+import org.example.models.TimeAllocation;
+import org.example.models.TimeBlock;
+import org.example.service.ClassroomService;
+import org.example.service.RoomService;
+import org.example.service.TimeAllocationService;
+import org.example.service.TimeBlockService;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
+import javafx.stage.Stage;
 
 public class AddAllocationDialogController implements Initializable {
 
@@ -52,19 +57,16 @@ public class AddAllocationDialogController implements Initializable {
     }
 
     private void setupSpinners() {
-        // Setup hour spinners (0-23)
         SpinnerValueFactory<Integer> startHourFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 8);
         SpinnerValueFactory<Integer> endHourFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 9);
         startHourSpinner.setValueFactory(startHourFactory);
         endHourSpinner.setValueFactory(endHourFactory);
 
-        // Setup minute spinners (0-59, step by 15)
         SpinnerValueFactory<Integer> startMinuteFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0, 15);
         SpinnerValueFactory<Integer> endMinuteFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0, 15);
         startMinuteSpinner.setValueFactory(startMinuteFactory);
         endMinuteSpinner.setValueFactory(endMinuteFactory);
 
-        // Make spinners editable
         startHourSpinner.setEditable(true);
         startMinuteSpinner.setEditable(true);
         endHourSpinner.setEditable(true);
@@ -72,13 +74,11 @@ public class AddAllocationDialogController implements Initializable {
     }
 
     private void setupComboBoxes() {
-        // Setup classroom combo box
         try {
             List<Classroom> classrooms = classroomService.getAll();
             ObservableList<Classroom> classroomList = FXCollections.observableArrayList(classrooms);
             classroomComboBox.setItems(classroomList);
             
-            // Set cell factory to display classroom semester
             classroomComboBox.setCellFactory(param -> new ListCell<Classroom>() {
                 @Override
                 protected void updateItem(Classroom item, boolean empty) {
@@ -91,19 +91,16 @@ public class AddAllocationDialogController implements Initializable {
                 }
             });
             
-            // Set button cell factory
             classroomComboBox.setButtonCell(classroomComboBox.getCellFactory().call(null));
         } catch (Exception e) {
             showAlert("Error", "Failed to load classrooms: " + e.getMessage(), Alert.AlertType.ERROR);
         }
 
-        // Setup room combo box
         try {
             List<Room> rooms = roomService.getAll();
             ObservableList<Room> roomList = FXCollections.observableArrayList(rooms);
             roomComboBox.setItems(roomList);
             
-            // Set cell factory to display room name
             roomComboBox.setCellFactory(param -> new ListCell<Room>() {
                 @Override
                 protected void updateItem(Room item, boolean empty) {
@@ -116,17 +113,14 @@ public class AddAllocationDialogController implements Initializable {
                 }
             });
             
-            // Set button cell factory
             roomComboBox.setButtonCell(roomComboBox.getCellFactory().call(null));
         } catch (Exception e) {
             showAlert("Error", "Failed to load rooms: " + e.getMessage(), Alert.AlertType.ERROR);
         }
 
-        // Setup day combo box
         ObservableList<DayOfWeek> dayList = FXCollections.observableArrayList(DayOfWeek.values());
         dayComboBox.setItems(dayList);
-        
-        // Set cell factory to display day name
+
         dayComboBox.setCellFactory(param -> new ListCell<DayOfWeek>() {
             @Override
             protected void updateItem(DayOfWeek item, boolean empty) {
@@ -138,13 +132,11 @@ public class AddAllocationDialogController implements Initializable {
                 }
             }
         });
-        
-        // Set button cell factory
+
         dayComboBox.setButtonCell(dayComboBox.getCellFactory().call(null));
     }
 
     private void setupValidation() {
-        // Add validation listeners
         startHourSpinner.valueProperty().addListener((obs, oldVal, newVal) -> validateTime());
         startMinuteSpinner.valueProperty().addListener((obs, oldVal, newVal) -> validateTime());
         endHourSpinner.valueProperty().addListener((obs, oldVal, newVal) -> validateTime());
@@ -169,7 +161,6 @@ public class AddAllocationDialogController implements Initializable {
         }
 
         try {
-            // Create TimeBlock
             LocalTime startTime = LocalTime.of(startHourSpinner.getValue(), startMinuteSpinner.getValue());
             LocalTime endTime = LocalTime.of(endHourSpinner.getValue(), endMinuteSpinner.getValue());
             
@@ -179,8 +170,6 @@ public class AddAllocationDialogController implements Initializable {
                 startTime,
                 endTime
             );
-
-            // Create TimeAllocation
             TimeAllocation allocation = new TimeAllocation(
                 TimeAllocation.getNextId(),
                 UUID.randomUUID(),
@@ -189,10 +178,8 @@ public class AddAllocationDialogController implements Initializable {
                 timeBlock
             );
 
-            // Save to service
             timeAllocationService.add(allocation);
-            
-            // Add to parent controller
+
             if (parentController != null) {
                 parentController.addAllocation(allocation);
             }

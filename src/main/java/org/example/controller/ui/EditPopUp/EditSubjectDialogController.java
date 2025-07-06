@@ -1,15 +1,16 @@
 package org.example.controller.ui.EditPopUp;
 
+import java.net.URL;
+import java.util.ResourceBundle;
+
+import org.example.models.Subject;
+
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import org.example.models.Subject;
-
-import java.net.URL;
-import java.util.ResourceBundle;
 
 public class EditSubjectDialogController implements Initializable {
     @FXML
@@ -60,7 +61,6 @@ public class EditSubjectDialogController implements Initializable {
     private void handleSave() {
         if (subjectToEdit != null) {
             subjectToEdit.setName(nameField.getText().trim());
-            // O campo codeField é apenas visual, não altera o id real
             subjectToEdit.setHourlyLoad(creditsSpinner.getValue());
             subjectToEdit.setDescription(descriptionField.getText().trim());
             updated = true;

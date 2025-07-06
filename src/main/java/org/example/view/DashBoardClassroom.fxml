@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="890.0" prefWidth="1315.0" styleClass="gradient-background" stylesheets="@/resources/css/DashBoardBaseStyle.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controller.ui.DashBoardClassroomController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="890.0" prefWidth="1315.0" styleClass="gradient-background" stylesheets="@../../../resources/css/DashBoardBaseStyle.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controller.ui.DashBoardClassroomController">
    <top>
       <HBox alignment="CENTER" prefHeight="95.0" prefWidth="1315.0" BorderPane.alignment="CENTER">
          <children>
@@ -88,7 +88,7 @@
                         <Image url="@../../../resources/img/whiteteacher.png" />
                      </image>
                   </ImageView>
-                  <Label alignment="BOTTOM_CENTER" contentDisplay="CENTER" prefHeight="20.0" prefWidth="75.0" styleClass="shadow" stylesheets="@/resources/css/DashBoardBaseStyle.css" text="Teacher" textFill="#fafafa">
+                  <Label alignment="BOTTOM_CENTER" contentDisplay="CENTER" prefHeight="24.0" prefWidth="81.0" styleClass="shadow" stylesheets="@/resources/css/DashBoardBaseStyle.css" text="Teacher" textFill="#fafafa">
                      <font>
                         <Font name="Bookman Old Style" size="20.0" />
                      </font>

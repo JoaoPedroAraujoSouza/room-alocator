@@ -8,6 +8,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.control.ScrollPane?>
 
 <ScrollPane fitToWidth="true" fitToHeight="true" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controller.ui.EditPopUp.EditAllocationDialogController" stylesheets="@/resources/css/DashBoardBaseStyle.css">
    <content>

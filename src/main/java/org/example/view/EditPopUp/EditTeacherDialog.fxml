@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" prefHeight="600.0" prefWidth="600.0" spacing="20.0" styleClass="dialog-background" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controller.ui.EditPopUp.EditTeacherDialogController" stylesheets="@/resources/css/DashBoardBaseStyle.css">
+<VBox alignment="CENTER" prefHeight="600.0" prefWidth="600.0" spacing="20.0" styleClass="dialog-background" stylesheets="@/resources/css/DashBoardBaseStyle.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controller.ui.EditPopUp.EditTeacherDialogController">
    <children>
       <Label styleClass="title-label" text="Edit Teacher">
          <font>
@@ -68,7 +68,7 @@
       <!-- Subject Links Section (Read Only) -->
       <VBox alignment="CENTER_LEFT" prefHeight="250.0" prefWidth="550.0" spacing="15.0" styleClass="section-container">
          <children>
-            <Label styleClass="section-title" text="Subject Links (Read Only)">
+            <Label styleClass="section-title" text="Subject Links ">
                <font>
                   <Font name="Bookman Old Style Bold" size="18.0" />
                </font>
@@ -79,7 +79,7 @@
                 <TableColumn fx:id="columnSubjectName" prefWidth="200.0" text="Subject Name" />
                 <TableColumn fx:id="columnSubjectCode" prefWidth="100.0" text="Subject ID" />
                 <TableColumn fx:id="columnSubjectCredits" prefWidth="100.0" text="Hourly Load" />
-                <TableColumn fx:id="columnLinkDate" prefWidth="110.0" text="Semester" />
+                <TableColumn fx:id="columnLinkDate" prefWidth="119.0" text="Semester" />
               </columns>
             </TableView>
          </children>
@@ -107,4 +107,4 @@
    <padding>
       <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
    </padding>
-</VBox> 
+</VBox>

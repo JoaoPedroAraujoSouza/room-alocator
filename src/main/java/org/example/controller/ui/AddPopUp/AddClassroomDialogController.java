@@ -1,20 +1,28 @@
 package org.example.controller.ui.AddPopUp;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.stage.Stage;
+import java.io.IOException;
+import java.util.List;
+import java.util.UUID;
+
+import org.example.controller.ui.DashBoardClassroomController;
 import org.example.models.Classroom;
 import org.example.models.Shift;
 import org.example.models.Teacher;
 import org.example.service.ClassroomService;
 import org.example.service.TeacherService;
-import org.example.controller.ui.DashBoardClassroomController;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.UUID;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 public class AddClassroomDialogController {
 
@@ -95,7 +103,7 @@ public class AddClassroomDialogController {
     }
     
     private void setupValidation() {
-        // Enable save button only when all fields are filled
+
         saveButton.setDisable(true);
         
         semesterField.textProperty().addListener((observable, oldValue, newValue) -> validateForm());
@@ -167,7 +175,7 @@ public class AddClassroomDialogController {
             shiftComboBox.getValue(),
             capacitySpinner.getValue(),
             teacherComboBox.getValue(),
-            null // timeAllocations will be initialized as empty list
+            null 
         );
     }
     
