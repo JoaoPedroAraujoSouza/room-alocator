@@ -1,0 +1,195 @@
+package org.example.controller.ui.AddPopUp;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+import javafx.stage.Stage;
+import org.example.models.Classroom;
+import org.example.models.Shift;
+import org.example.models.Teacher;
+import org.example.service.ClassroomService;
+import org.example.service.TeacherService;
+import org.example.controller.ui.DashBoardClassroomController;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.UUID;
+
+public class AddClassroomDialogController {
+
+    @FXML
+    private TextField semesterField;
+    
+    @FXML
+    private ComboBox<Shift> shiftComboBox;
+    
+    @FXML
+    private Spinner<Integer> capacitySpinner;
+    
+    @FXML
+    private ComboBox<Teacher> teacherComboBox;
+    
+    @FXML
+    private Button saveButton;
+    
+    @FXML
+    private Button cancelButton;
+    
+    private DashBoardClassroomController parentController;
+    private ClassroomService classroomService = new ClassroomService();
+    private TeacherService teacherService = new TeacherService();
+    
+    @FXML
+    public void initialize() {
+        setupShiftComboBox();
+        setupCapacitySpinner();
+        loadTeachers();
+        setupValidation();
+    }
+    
+    private void setupShiftComboBox() {
+        ObservableList<Shift> shifts = FXCollections.observableArrayList(Shift.values());
+        shiftComboBox.setItems(shifts);
+        shiftComboBox.setCellFactory(param -> new ListCell<Shift>() {
+            @Override
+            protected void updateItem(Shift item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item.getDisplayName());
+                }
+            }
+        });
+        shiftComboBox.setButtonCell(shiftComboBox.getCellFactory().call(null));
+    }
+    
+    private void setupCapacitySpinner() {
+        SpinnerValueFactory<Integer> valueFactory = 
+            new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, 30);
+        capacitySpinner.setValueFactory(valueFactory);
+    }
+    
+    private void loadTeachers() {
+        try {
+            List<Teacher> teachers = teacherService.getAll();
+            ObservableList<Teacher> teacherList = FXCollections.observableArrayList(teachers);
+            teacherComboBox.setItems(teacherList);
+            
+            teacherComboBox.setCellFactory(param -> new ListCell<Teacher>() {
+                @Override
+                protected void updateItem(Teacher item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        setText(null);
+                    } else {
+                        setText(item.getName() + " (" + item.getEmail() + ")");
+                    }
+                }
+            });
+            teacherComboBox.setButtonCell(teacherComboBox.getCellFactory().call(null));
+        } catch (Exception e) {
+            showAlert("Error", "Failed to load teachers: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+    
+    private void setupValidation() {
+        // Enable save button only when all fields are filled
+        saveButton.setDisable(true);
+        
+        semesterField.textProperty().addListener((observable, oldValue, newValue) -> validateForm());
+        shiftComboBox.valueProperty().addListener((observable, oldValue, newValue) -> validateForm());
+        teacherComboBox.valueProperty().addListener((observable, oldValue, newValue) -> validateForm());
+    }
+    
+    private void validateForm() {
+        boolean isValid = semesterField.getText() != null && !semesterField.getText().trim().isEmpty() &&
+                         shiftComboBox.getValue() != null &&
+                         teacherComboBox.getValue() != null;
+        saveButton.setDisable(!isValid);
+    }
+    
+    @FXML
+    private void handleSave() {
+        if (!validateInput()) {
+            return;
+        }
+        
+        try {
+            Classroom classroom = createClassroom();
+            classroomService.add(classroom);
+            
+            if (parentController != null) {
+                parentController.addClassroomToTable(classroom);
+            }
+            
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Classroom added successfully!", ButtonType.OK);
+            alert.setHeaderText(null);
+            alert.setTitle("Success");
+            alert.showAndWait();
+            closeDialog();
+        } catch (IOException e) {
+            showAlert("Error", "Failed to create classroom: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+    
+    private boolean validateInput() {
+        if (semesterField.getText() == null || semesterField.getText().trim().isEmpty()) {
+            showAlert("Validation Error", "Please enter a semester.", Alert.AlertType.WARNING);
+            return false;
+        }
+        
+        if (shiftComboBox.getValue() == null) {
+            showAlert("Validation Error", "Please select a shift.", Alert.AlertType.WARNING);
+            return false;
+        }
+        
+        if (teacherComboBox.getValue() == null) {
+            showAlert("Validation Error", "Please select a responsible teacher.", Alert.AlertType.WARNING);
+            return false;
+        }
+        
+        int capacity = capacitySpinner.getValue();
+        if (capacity <= 0) {
+            showAlert("Validation Error", "Capacity must be greater than 0.", Alert.AlertType.WARNING);
+            return false;
+        }
+        
+        return true;
+    }
+    
+    private Classroom createClassroom() {
+        return new Classroom(
+            Classroom.getNextId(),
+            UUID.randomUUID(),
+            semesterField.getText().trim(),
+            shiftComboBox.getValue(),
+            capacitySpinner.getValue(),
+            teacherComboBox.getValue(),
+            null // timeAllocations will be initialized as empty list
+        );
+    }
+    
+    @FXML
+    private void handleCancel() {
+        closeDialog();
+    }
+    
+    private void closeDialog() {
+        Stage stage = (Stage) cancelButton.getScene().getWindow();
+        stage.close();
+    }
+    
+    private void showAlert(String title, String content, Alert.AlertType alertType) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+    
+    public void setParentController(DashBoardClassroomController parentController) {
+        this.parentController = parentController;
+    }
+} 

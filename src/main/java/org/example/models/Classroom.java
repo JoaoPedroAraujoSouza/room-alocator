@@ -24,4 +24,8 @@ public class Classroom implements Serializable {
     private int maxStudentsCapacity;
     private Teacher responsibleTeacher;
     private List<TimeAllocation> timeAllocations;
+    
+    public static long getNextId() {
+        return nextId++;
+    }
 }

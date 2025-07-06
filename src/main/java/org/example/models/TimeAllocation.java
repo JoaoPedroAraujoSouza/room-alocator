@@ -20,4 +20,8 @@ public class TimeAllocation implements Serializable {
     private Classroom classroom;
     private Room room;
     private TimeBlock timeBlock;
+    
+    public static long getNextId() {
+        return nextId++;
+    }
 }

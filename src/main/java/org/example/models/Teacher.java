@@ -21,4 +21,8 @@ public class Teacher implements Serializable {
     private String name;
     private String cpf;
     private String email;
+    
+    public static synchronized long getNextId() {
+        return nextId++;
+    }
 }

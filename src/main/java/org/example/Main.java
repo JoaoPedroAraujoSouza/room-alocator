@@ -14,9 +14,9 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("layout.fxml"));
-            Scene scene = new Scene(root);
-            String css = this.getClass().getResource("/resources/css/layout.css").toExternalForm();
+            Parent root = FXMLLoader.load(getClass().getResource("/org/example/view/DashBoardHome.fxml"));
+            Scene scene = new Scene(root, 1315, 890);
+            String css = this.getClass().getResource("/resources/css/DashBoardBaseStyle.css").toExternalForm();
             scene.getStylesheets().add(css);
             primaryStage.setScene(scene);
             primaryStage.show();

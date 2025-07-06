@@ -20,4 +20,8 @@ public class TimeBlock implements Serializable {
     private DayOfWeek dayOfWeek;
     private LocalTime startTime;
     private LocalTime endTime;
+    
+    public static long getNextId() {
+        return nextId++;
+    }
 }
