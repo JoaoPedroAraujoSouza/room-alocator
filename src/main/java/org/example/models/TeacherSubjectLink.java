@@ -22,4 +22,8 @@ public class TeacherSubjectLink implements Serializable {
     private String semester;
     private boolean active;
     private Classroom classroom;
+
+    public static synchronized long getNextId() {
+        return nextId++;
+    }
 }

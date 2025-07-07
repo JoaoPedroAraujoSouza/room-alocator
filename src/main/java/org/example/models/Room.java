@@ -25,4 +25,8 @@ public class Room implements Serializable {
     private List<String> resources;
     private List<UnavailabityPeriod> unavailabilityPeriods;
     private List<TimeAllocation> timeAllocations;
+    
+    public static long getNextId() {
+        return nextId++;
+    }
 }

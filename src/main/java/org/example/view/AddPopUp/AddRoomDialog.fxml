@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.text.Font?>
+
+<ScrollPane fitToWidth="true" fitToHeight="true" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controller.ui.AddPopUp.AddRoomDialogController" stylesheets="@/resources/css/DashBoardBaseStyle.css">
+   <VBox alignment="CENTER" prefHeight="600.0" prefWidth="500.0" spacing="15.0">
+      <children>
+         <Label text="Add New Room" textFill="#2c3e50">
+            <font>
+               <Font name="Bookman Old Style Bold" size="24.0" />
+            </font>
+         </Label>
+         
+         <!-- Basic Information -->
+         <VBox spacing="10.0">
+            <Label text="Basic Information" textFill="#2c3e50">
+               <font>
+                  <Font name="Bookman Old Style Bold" size="16.0" />
+               </font>
+            </Label>
+            <VBox spacing="5.0">
+               <children>
+                  <Label text="Room Name:" textFill="#34495e">
+                     <font>
+                        <Font name="Bookman Old Style" size="14.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="txtRoomName" prefHeight="35.0" prefWidth="450.0" promptText="Enter room name" />
+               </children>
+            </VBox>
+            <VBox spacing="5.0">
+               <children>
+                  <Label text="Localization:" textFill="#34495e">
+                     <font>
+                        <Font name="Bookman Old Style" size="14.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="txtLocalization" prefHeight="35.0" prefWidth="450.0" promptText="Enter building/floor" />
+               </children>
+            </VBox>
+            <VBox spacing="5.0">
+               <children>
+                  <Label text="Capacity:" textFill="#34495e">
+                     <font>
+                        <Font name="Bookman Old Style" size="14.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="txtCapacity" prefHeight="35.0" prefWidth="450.0" promptText="Enter capacity (number)" />
+               </children>
+            </VBox>
+         </VBox>
+         
+         <!-- Resources -->
+         <VBox spacing="10.0">
+            <Label text="Resources" textFill="#2c3e50">
+               <font>
+                  <Font name="Bookman Old Style Bold" size="16.0" />
+               </font>
+            </Label>
+            <VBox spacing="5.0">
+               <Label text="Current Resources:" textFill="#34495e" style="-fx-font-weight: bold;" />
+               <TextArea fx:id="txtResourcesDisplay" prefHeight="60.0" prefWidth="450.0" editable="false" promptText="No resources added yet" />
+            </VBox>
+            <HBox spacing="10.0" alignment="CENTER_LEFT">
+               <children>
+                  <TextField fx:id="txtResource" prefHeight="35.0" prefWidth="300.0" promptText="Enter resource (e.g., Projector, Whiteboard)" />
+                  <Button fx:id="btnAddResource" mnemonicParsing="false" onAction="#handleAddResource" prefHeight="35.0" prefWidth="80.0" text="Add" />
+               </children>
+            </HBox>
+            <HBox spacing="10.0" alignment="CENTER_LEFT">
+               <children>
+                  <Button fx:id="btnClearResources" mnemonicParsing="false" onAction="#handleClearResources" prefHeight="30.0" prefWidth="100.0" text="Clear All" />
+               </children>
+            </HBox>
+         </VBox>
+         
+         <!-- Unavailability Periods -->
+         <VBox spacing="10.0">
+            <Label text="Unavailability Periods" textFill="#2c3e50">
+               <font>
+                  <Font name="Bookman Old Style Bold" size="16.0" />
+               </font>
+            </Label>
+            <VBox spacing="5.0">
+               <Label text="Current Periods:" textFill="#34495e" style="-fx-font-weight: bold;" />
+               <TextArea fx:id="txtPeriodsDisplay" prefHeight="60.0" prefWidth="450.0" editable="false" promptText="No periods added yet" />
+            </VBox>
+            <HBox spacing="10.0" alignment="CENTER_LEFT">
+               <children>
+                  <TextField fx:id="txtStartDay" prefHeight="35.0" prefWidth="100.0" promptText="dd/mm" />
+                  <Label text="to" textFill="#34495e" />
+                  <TextField fx:id="txtEndDay" prefHeight="35.0" prefWidth="100.0" promptText="dd/mm" />
+                  <TextField fx:id="txtReason" prefHeight="35.0" prefWidth="150.0" promptText="Reason" />
+                  <Button fx:id="btnAddPeriod" mnemonicParsing="false" onAction="#handleAddPeriod" prefHeight="35.0" prefWidth="80.0" text="Add" />
+               </children>
+            </HBox>
+            <HBox spacing="10.0" alignment="CENTER_LEFT">
+               <children>
+                  <Button fx:id="btnClearPeriods" mnemonicParsing="false" onAction="#handleClearPeriods" prefHeight="30.0" prefWidth="100.0" text="Clear All" />
+               </children>
+            </HBox>
+         </VBox>
+         
+         <!-- Buttons -->
+         <HBox alignment="CENTER" spacing="20.0">
+            <children>
+               <Button fx:id="btnSave" mnemonicParsing="false" onAction="#handleSave" prefHeight="40.0" prefWidth="120.0" text="Save" />
+               <Button fx:id="btnCancel" mnemonicParsing="false" onAction="#handleCancel" prefHeight="40.0" prefWidth="120.0" text="Cancel" />
+            </children>
+         </HBox>
+      </children>
+      <padding>
+         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+      </padding>
+   </VBox>
+</ScrollPane> 

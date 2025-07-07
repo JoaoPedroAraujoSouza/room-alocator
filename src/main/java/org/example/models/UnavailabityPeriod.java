@@ -21,4 +21,8 @@ public class UnavailabityPeriod implements Serializable {
     private LocalTime startDate;
     private LocalTime endDate;
     private String reason;
+    
+    public static long getNextId() {
+        return nextId++;
+    }
 }

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.ScrollPane?>
+
+<ScrollPane fitToWidth="true" fitToHeight="true" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controller.ui.EditPopUp.EditAllocationDialogController" stylesheets="@/resources/css/DashBoardBaseStyle.css">
+   <content>
+      <VBox alignment="CENTER" prefHeight="500.0" prefWidth="500.0" spacing="20.0" styleClass="dialog-background">
+         <children>
+            <Label styleClass="title-label" text="Edit Time Allocation">
+               <font>
+                  <Font name="Bookman Old Style Bold" size="24.0" />
+               </font>
+            </Label>
+            
+            <!-- Classroom Selection -->
+            <VBox alignment="CENTER_LEFT" prefHeight="80.0" prefWidth="450.0" spacing="8.0" styleClass="section-container">
+               <children>
+                  <Label styleClass="field-label" text="Classroom:">
+                     <font>
+                        <Font name="Bookman Old Style Bold" size="16.0" />
+                     </font>
+                  </Label>
+                  <ComboBox fx:id="classroomComboBox" prefWidth="400.0" promptText="Select a classroom" styleClass="combo-box" />
+               </children>
+               <padding>
+                  <Insets bottom="10.0" left="20.0" right="20.0" top="15.0" />
+               </padding>
+            </VBox>
+            
+            <!-- Room Selection -->
+            <VBox alignment="CENTER_LEFT" prefHeight="80.0" prefWidth="450.0" spacing="8.0" styleClass="section-container">
+               <children>
+                  <Label styleClass="field-label" text="Room:">
+                     <font>
+                        <Font name="Bookman Old Style Bold" size="16.0" />
+                     </font>
+                  </Label>
+                  <ComboBox fx:id="roomComboBox" prefWidth="400.0" promptText="Select a room" styleClass="combo-box" />
+               </children>
+               <padding>
+                  <Insets bottom="10.0" left="20.0" right="20.0" top="15.0" />
+               </padding>
+            </VBox>
+            
+            <!-- Day Selection -->
+            <VBox alignment="CENTER_LEFT" prefHeight="80.0" prefWidth="450.0" spacing="8.0" styleClass="section-container">
+               <children>
+                  <Label styleClass="field-label" text="Day of Week:">
+                     <font>
+                        <Font name="Bookman Old Style Bold" size="16.0" />
+                     </font>
+                  </Label>
+                  <ComboBox fx:id="dayComboBox" prefWidth="400.0" promptText="Select day of week" styleClass="combo-box" />
+               </children>
+               <padding>
+                  <Insets bottom="10.0" left="20.0" right="20.0" top="15.0" />
+               </padding>
+            </VBox>
+            
+            <!-- Time Selection -->
+            <VBox alignment="CENTER_LEFT" prefHeight="120.0" prefWidth="450.0" spacing="8.0" styleClass="section-container">
+               <children>
+                  <Label styleClass="field-label" text="Time Block:">
+                     <font>
+                        <Font name="Bookman Old Style Bold" size="16.0" />
+                     </font>
+                  </Label>
+                  <HBox alignment="CENTER_LEFT" spacing="20.0">
+                     <children>
+                        <VBox spacing="5.0">
+                           <children>
+                              <Label styleClass="sub-field-label" text="Start Time:">
+                                 <font>
+                                    <Font name="Bookman Old Style" size="14.0" />
+                                 </font>
+                              </Label>
+                              <HBox spacing="5.0">
+                                 <children>
+                                    <Spinner fx:id="startHourSpinner" editable="true" prefWidth="60.0" />
+                                    <Label styleClass="time-separator" text=":">
+                                       <font>
+                                          <Font name="Bookman Old Style Bold" size="16.0" />
+                                       </font>
+                                    </Label>
+                                    <Spinner fx:id="startMinuteSpinner" editable="true" prefWidth="60.0" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                        <VBox spacing="5.0">
+                           <children>
+                              <Label styleClass="sub-field-label" text="End Time:">
+                                 <font>
+                                    <Font name="Bookman Old Style" size="14.0" />
+                                 </font>
+                              </Label>
+                              <HBox spacing="5.0">
+                                 <children>
+                                    <Spinner fx:id="endHourSpinner" editable="true" prefWidth="60.0" />
+                                    <Label styleClass="time-separator" text=":">
+                                       <font>
+                                          <Font name="Bookman Old Style Bold" size="16.0" />
+                                       </font>
+                                    </Label>
+                                    <Spinner fx:id="endMinuteSpinner" editable="true" prefWidth="60.0" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </children>
+               <padding>
+                  <Insets bottom="10.0" left="20.0" right="20.0" top="15.0" />
+               </padding>
+            </VBox>
+            
+            <!-- Buttons -->
+            <HBox alignment="CENTER" spacing="20.0">
+               <children>
+                  <Button fx:id="saveButton" onAction="#handleSave" styleClass="save-button" text="Save">
+                     <font>
+                        <Font name="Bookman Old Style Bold" size="14.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="cancelButton" onAction="#handleCancel" styleClass="cancel-button" text="Cancel">
+                     <font>
+                        <Font name="Bookman Old Style Bold" size="14.0" />
+                     </font>
+                  </Button>
+               </children>
+            </HBox>
+         </children>
+         <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+         </padding>
+      </VBox>
+   </content>
+</ScrollPane> 
