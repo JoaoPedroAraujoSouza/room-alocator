@@ -10,8 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="890.0" prefWidth="1315.0" styleClass="gradient-background" stylesheets="@/resources/css/DashBoardBaseStyle.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controller.ui.DashBoardReportsController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="890.0" prefWidth="1315.0" styleClass="gradient-background" stylesheets="@../../../resources/css/DashBoardBaseStyle.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controller.ui.DashBoardReportsController">
    <top>
       <HBox alignment="CENTER" prefHeight="95.0" prefWidth="1315.0" BorderPane.alignment="CENTER">
          <children>
@@ -27,7 +26,7 @@
    <left>
       <VBox prefHeight="775.0" prefWidth="272.0" spacing="24.0" styleClass="container" stylesheets="@/resources/css/DashBoardBaseStyle.css" BorderPane.alignment="CENTER">
          <children>
-            <HBox fx:id="homeBox" alignment="CENTER_LEFT" prefHeight="56.0" prefWidth="318.0" spacing="12.0" onMouseClicked="#switchToHome">
+            <HBox fx:id="homeBox" alignment="CENTER_LEFT" onMouseClicked="#switchToHome" prefHeight="56.0" prefWidth="318.0" spacing="12.0">
                <children>
                   <ImageView fitHeight="48.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true" styleClass="shadow">
                      <image>
@@ -44,7 +43,7 @@
                   <Insets left="20.0" />
                </padding>
             </HBox>
-            <HBox fx:id="roomBox" alignment="CENTER_LEFT" prefHeight="56.0" prefWidth="318.0" spacing="12.0" onMouseClicked="#switchToRooms">
+            <HBox fx:id="roomBox" alignment="CENTER_LEFT" onMouseClicked="#switchToRooms" prefHeight="56.0" prefWidth="318.0" spacing="12.0">
                <children>
                   <ImageView fitHeight="38.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true" styleClass="shadow">
                      <image>
@@ -61,7 +60,7 @@
                   <Insets left="20.0" />
                </padding>
             </HBox>
-            <HBox fx:id="allocationBox" alignment="CENTER_LEFT" prefHeight="56.0" prefWidth="318.0" spacing="12.0" onMouseClicked="#switchToAllocations">
+            <HBox fx:id="allocationBox" alignment="CENTER_LEFT" onMouseClicked="#switchToAllocations" prefHeight="56.0" prefWidth="318.0" spacing="12.0">
                <children>
                   <ImageView fitHeight="38.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true" styleClass="shadow">
                      <image>
@@ -78,7 +77,7 @@
                   <Insets left="20.0" />
                </padding>
             </HBox>
-            <HBox fx:id="teacherBox" alignment="CENTER_LEFT" prefHeight="56.0" prefWidth="318.0" spacing="12.0" onMouseClicked="#switchToTeacher">
+            <HBox fx:id="teacherBox" alignment="CENTER_LEFT" onMouseClicked="#switchToTeacher" prefHeight="56.0" prefWidth="318.0" spacing="12.0">
                <children>
                   <ImageView fitHeight="38.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true" styleClass="shadow">
                      <image>
@@ -95,7 +94,7 @@
                   <Insets left="20.0" />
                </padding>
             </HBox>
-            <HBox fx:id="subjectBox" alignment="CENTER_LEFT" prefHeight="56.0" prefWidth="318.0" spacing="12.0" onMouseClicked="#switchToSubject">
+            <HBox fx:id="subjectBox" alignment="CENTER_LEFT" onMouseClicked="#switchToSubject" prefHeight="56.0" prefWidth="318.0" spacing="12.0">
                <children>
                   <ImageView fitHeight="38.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true" styleClass="shadow">
                      <image>
@@ -112,7 +111,7 @@
                   <Insets left="20.0" />
                </padding>
             </HBox>
-            <HBox fx:id="classroomBox" alignment="CENTER_LEFT" prefHeight="56.0" prefWidth="318.0" spacing="12.0" onMouseClicked="#switchToClassroom">
+            <HBox fx:id="classroomBox" alignment="CENTER_LEFT" onMouseClicked="#switchToClassroom" prefHeight="56.0" prefWidth="318.0" spacing="12.0">
                <children>
                   <ImageView fitHeight="38.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true" styleClass="shadow">
                      <image>
@@ -129,7 +128,7 @@
                   <Insets left="20.0" />
                </padding>
             </HBox>
-            <HBox fx:id="reportsBox" alignment="CENTER_LEFT" prefHeight="56.0" prefWidth="318.0" spacing="12.0" onMouseClicked="#switchToReports">
+            <HBox fx:id="reportsBox" alignment="CENTER_LEFT" onMouseClicked="#switchToReports" prefHeight="56.0" prefWidth="318.0" spacing="12.0">
                <children>
                   <ImageView fitHeight="38.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true" styleClass="shadow">
                      <image>

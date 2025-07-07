@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="890.0" prefWidth="1315.0" styleClass="gradient-background" stylesheets="@/resources/css/DashBoardBaseStyle.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controller.ui.DashBoardSubjectController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="890.0" prefWidth="1315.0" styleClass="gradient-background" stylesheets="@../../../resources/css/DashBoardBaseStyle.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controller.ui.DashBoardSubjectController">
    <top>
       <HBox alignment="CENTER" prefHeight="95.0" prefWidth="1315.0" BorderPane.alignment="CENTER">
          <children>
@@ -28,7 +28,7 @@
       </HBox>
    </top>
    <left>
-      <VBox prefHeight="775.0" prefWidth="272.0" spacing="24.0" styleClass="container" stylesheets="@/resources/css/DashBoardBaseStyle.css" BorderPane.alignment="CENTER">
+      <VBox prefHeight="775.0" prefWidth="272.0" spacing="24.0" styleClass="container" BorderPane.alignment="CENTER">
          <children>
             <HBox fx:id="homeBox" alignment="CENTER_LEFT" onMouseClicked="#switchToHome" prefHeight="56.0" prefWidth="318.0" spacing="12.0">
                <children>
@@ -37,7 +37,7 @@
                         <Image url="@../../../resources/img/whitehouse.png" />
                      </image>
                   </ImageView>
-                  <Label alignment="BOTTOM_CENTER" contentDisplay="CENTER" prefHeight="23.0" prefWidth="74.0" styleClass="shadow" stylesheets="@/resources/css/DashBoardBaseStyle.css" text="Home" textFill="#fafafa">
+                  <Label alignment="BOTTOM_CENTER" contentDisplay="CENTER" prefHeight="24.0" prefWidth="58.0" styleClass="shadow" stylesheets="@/resources/css/DashBoardBaseStyle.css" text="Home" textFill="#fafafa">
                      <font>
                         <Font name="Bookman Old Style" size="20.0" />
                      </font>
@@ -165,19 +165,19 @@
       <VBox prefHeight="200.0" prefWidth="100.0" spacing="20.0" BorderPane.alignment="CENTER">
          <children>
             <!-- Subject Management Section -->
-            <VBox spacing="10.0">
+            <VBox prefHeight="768.0" prefWidth="1011.0" spacing="10.0">
                <HBox alignment="CENTER_LEFT" prefHeight="49.0" prefWidth="1003.0" spacing="10.0">
                   <children>
                      <TextField fx:id="txtSearch" prefHeight="49.0" prefWidth="678.0" promptText="Search subjects by name, code, or description..." HBox.hgrow="ALWAYS" />
                      <Button fx:id="btnAddSubject" mnemonicParsing="false" onAction="#handleAddSubject" prefHeight="49.0" prefWidth="200.0" text="New Subject +" />
                   </children>
                </HBox>
-               <TableView fx:id="subjectTable" onMouseClicked="#handleSubjectSelection" prefHeight="695.0" prefWidth="1003.0">
+               <TableView fx:id="subjectTable" onMouseClicked="#handleSubjectSelection" prefHeight="711.0" prefWidth="1009.0">
                  <columns>
                    <TableColumn fx:id="columnName" prefWidth="200.0" text="Name" />
-                   <TableColumn fx:id="columnDescription" prefWidth="350.0" text="Description" />
-                   <TableColumn fx:id="columnHourlyLoad" prefWidth="120.0" text="Hourly Load" />
-                   <TableColumn fx:id="columnActions" prefWidth="150.0" text="Actions" />
+                   <TableColumn fx:id="columnDescription" prefWidth="349.0" text="Description" />
+                   <TableColumn fx:id="columnHourlyLoad" prefWidth="263.0" text="Hourly Load" />
+                   <TableColumn fx:id="columnActions" prefWidth="189.0" text="Actions" />
                  </columns>
                </TableView>
 

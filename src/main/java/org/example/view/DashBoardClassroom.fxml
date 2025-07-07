@@ -37,7 +37,7 @@
                         <Image url="@../../../resources/img/whitehouse.png" />
                      </image>
                   </ImageView>
-                  <Label alignment="BOTTOM_CENTER" contentDisplay="CENTER" prefHeight="23.0" prefWidth="74.0" styleClass="shadow" stylesheets="@/resources/css/DashBoardBaseStyle.css" text="Home" textFill="#fafafa">
+                  <Label alignment="BOTTOM_CENTER" contentDisplay="CENTER" prefHeight="24.0" prefWidth="57.0" styleClass="shadow" stylesheets="@/resources/css/DashBoardBaseStyle.css" text="Home" textFill="#fafafa">
                      <font>
                         <Font name="Bookman Old Style" size="20.0" />
                      </font>
@@ -165,14 +165,14 @@
       <VBox prefHeight="200.0" prefWidth="100.0" spacing="20.0" BorderPane.alignment="CENTER">
          <children>
             <!-- Classroom Management Section -->
-            <VBox spacing="10.0">
+            <VBox prefHeight="776.0" prefWidth="1003.0" spacing="10.0">
                <HBox alignment="CENTER_LEFT" prefHeight="49.0" prefWidth="1003.0" spacing="10.0">
                   <children>
                      <TextField fx:id="txtSearch" prefHeight="49.0" prefWidth="678.0" promptText="Search classrooms by semester, shift, or teacher..." HBox.hgrow="ALWAYS" />
                      <Button fx:id="btnAddClassroom" mnemonicParsing="false" onAction="#CreateClassroom" prefHeight="49.0" prefWidth="200.0" text="New Classroom +" />
                   </children>
                </HBox>
-               <TableView fx:id="tableClassroom" prefHeight="691.0" prefWidth="1003.0">
+               <TableView fx:id="tableClassroom" prefHeight="706.0" prefWidth="1003.0">
                  <columns>
                    <TableColumn fx:id="columnSemester" prefWidth="150.0" text="Semester" />
                    <TableColumn fx:id="columnShift" prefWidth="120.0" text="Shift" />

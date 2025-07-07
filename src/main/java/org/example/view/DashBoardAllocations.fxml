@@ -37,7 +37,7 @@
                         <Image url="@../../../resources/img/whitehouse.png" />
                      </image>
                   </ImageView>
-                  <Label alignment="BOTTOM_CENTER" contentDisplay="CENTER" prefHeight="23.0" prefWidth="74.0" styleClass="shadow" stylesheets="@/resources/css/DashBoardBaseStyle.css" text="Home" textFill="#fafafa">
+                  <Label alignment="BOTTOM_CENTER" contentDisplay="CENTER" prefHeight="24.0" prefWidth="57.0" styleClass="shadow" stylesheets="@/resources/css/DashBoardBaseStyle.css" text="Home" textFill="#fafafa">
                      <font>
                         <Font name="Bookman Old Style" size="20.0" />
                      </font>
@@ -54,7 +54,7 @@
                         <Image url="@../../../resources/img/whiteroom.png" />
                      </image>
                   </ImageView>
-                  <Label alignment="BOTTOM_CENTER" contentDisplay="CENTER" prefHeight="29.0" prefWidth="88.0" styleClass="shadow" stylesheets="@/resources/css/DashBoardBaseStyle.css" text="Rooms" textFill="#fafafa">
+                  <Label alignment="BOTTOM_CENTER" contentDisplay="CENTER" prefHeight="16.0" prefWidth="67.0" styleClass="shadow" stylesheets="@/resources/css/DashBoardBaseStyle.css" text="Rooms" textFill="#fafafa">
                      <font>
                         <Font name="Bookman Old Style" size="20.0" />
                      </font>
@@ -170,14 +170,14 @@
                   <Button fx:id="addButton" mnemonicParsing="false" onAction="#handleAddAllocation" prefHeight="49.0" prefWidth="200.0" text="New Allocation +" />
                </children>
             </HBox>
-            <TableView fx:id="allocationTable" prefHeight="695.0" prefWidth="1003.0">
+            <TableView fx:id="allocationTable" prefHeight="697.0" prefWidth="1010.0">
               <columns>
                 <TableColumn fx:id="columnClassroom" prefWidth="200.0" text="Classroom" />
-                <TableColumn fx:id="columnRoom" prefWidth="150.0" text="Room" />
-                <TableColumn fx:id="columnDay" prefWidth="100.0" text="Day" />
-                <TableColumn fx:id="columnStartTime" prefWidth="120.0" text="Start Time" />
-                <TableColumn fx:id="columnEndTime" prefWidth="120.0" text="End Time" />
-                <TableColumn fx:id="columnActions" prefWidth="150.0" text="Actions" />
+                <TableColumn fx:id="columnRoom" prefWidth="164.0" text="Room" />
+                <TableColumn fx:id="columnDay" prefWidth="119.0" text="Day" />
+                <TableColumn fx:id="columnStartTime" prefWidth="166.0" text="Start Time" />
+                <TableColumn fx:id="columnEndTime" prefWidth="213.0" text="End Time" />
+                <TableColumn fx:id="columnActions" prefWidth="139.0" text="Actions" />
               </columns>
             </TableView>
          </children>
