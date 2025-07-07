@@ -164,7 +164,7 @@
    <center>
       <VBox prefHeight="200.0" prefWidth="100.0" spacing="20.0" BorderPane.alignment="CENTER">
          <children>
-            <!-- Subject Management Section -->
+
             <VBox prefHeight="768.0" prefWidth="1011.0" spacing="10.0">
                <HBox alignment="CENTER_LEFT" prefHeight="49.0" prefWidth="1003.0" spacing="10.0">
                   <children>
@@ -185,7 +185,7 @@
                <VBox fx:id="linkSection" managed="false" spacing="10.0" styleClass="section-container" visible="false">
                  <children>
                    <HBox alignment="CENTER_LEFT" spacing="10.0">
-                     <Label styleClass="section-title" text="Vínculos (TeacherSubjectLink)" />
+                     <Label styleClass="section-title" text="Link (TeacherSubjectLink)" />
                      <Button fx:id="addLinkButton" onAction="#handleAddLink" text="Novo Vínculo +" />
                      <Button fx:id="editLinkButton" disable="true" onAction="#handleEditLink" text="Editar Vínculo" />
                      <Button fx:id="removeLinkButton" disable="true" onAction="#handleRemoveLink" text="Remover Vínculo" />
