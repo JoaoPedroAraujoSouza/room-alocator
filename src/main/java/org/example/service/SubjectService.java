@@ -9,7 +9,15 @@ import java.util.List;
 import java.util.Optional;
 
 public class SubjectService extends AbstractService<Subject> implements SubjectServiceInterface {
-    private final SubjectRepository repository = new SubjectRepository();
+    private final SubjectRepository repository;
+
+    public SubjectService(SubjectRepository repository) {
+        this.repository = repository;
+    }
+
+    public SubjectService() {
+        this.repository = new SubjectRepository();
+    }
 
     @Override
     public List<Subject> getAll() {

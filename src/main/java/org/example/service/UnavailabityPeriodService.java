@@ -9,7 +9,15 @@ import java.util.List;
 import java.util.Optional;
 
 public class UnavailabityPeriodService extends AbstractService<UnavailabityPeriod> implements UnavailabityPeriodServiceInterface {
-    private final UnavailabityPeriodRepository repository = new UnavailabityPeriodRepository();
+    private final UnavailabityPeriodRepository repository;
+
+    public UnavailabityPeriodService(UnavailabityPeriodRepository repository) {
+        this.repository = repository;
+    }
+
+    public UnavailabityPeriodService() {
+        this.repository = new UnavailabityPeriodRepository();
+    }
 
     @Override
     public List<UnavailabityPeriod> getAll() {

@@ -9,7 +9,15 @@ import java.util.List;
 import java.util.Optional;
 
 public class RoomService extends AbstractService<Room> implements RoomServiceInterface {
-    private final RoomRepository repository = new RoomRepository();
+    private final RoomRepository repository;
+
+    public RoomService(RoomRepository repository) {
+        this.repository = repository;
+    }
+
+    public RoomService() {
+        this.repository = new RoomRepository();
+    }
 
     @Override
     public List<Room> getAll() {

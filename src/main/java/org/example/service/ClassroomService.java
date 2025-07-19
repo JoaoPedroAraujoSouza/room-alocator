@@ -9,7 +9,15 @@ import java.util.List;
 import java.util.Optional;
 
 public class ClassroomService extends AbstractService<Classroom> implements ClassroomServiceInterface {
-    private final ClassroomRepository repository = new ClassroomRepository();
+    private final ClassroomRepository repository;
+
+    public ClassroomService(ClassroomRepository repository) {
+        this.repository = repository;
+    }
+
+    public ClassroomService() {
+        this.repository = new ClassroomRepository();
+    }
 
     @Override
     public List<Classroom> getAll() {

@@ -9,6 +9,7 @@ import java.util.ResourceBundle;
 
 import org.example.controller.ui.AddPopUp.AddAllocationDialogController;
 import org.example.controller.ui.EditPopUp.EditAllocationDialogController;
+import org.example.exceptions.NotFoundException; // Import necessário
 import org.example.models.Classroom;
 import org.example.models.Room;
 import org.example.models.TimeAllocation;
@@ -51,57 +52,26 @@ public class DashBoardAllocationsController extends BaseDashboardController impl
     @FXML private TableColumn<TimeAllocation, Void> columnActions;
     @FXML private TextField searchField;
 
-    @FXML private HBox homeBox;
-    @FXML private HBox roomBox;
-    @FXML private HBox allocationBox;
-    @FXML private HBox teacherBox;
-    @FXML private HBox subjectBox;
-    @FXML private HBox classroomBox;
-    @FXML private HBox reportsBox;
-
     private final TimeAllocationService timeAllocationService = new TimeAllocationService();
-    private final ClassroomService classroomService = new ClassroomService();
-    private final RoomService roomService = new RoomService();
-    private final TimeBlockService timeBlockService = new TimeBlockService();
-    
+
     private ObservableList<TimeAllocation> allocationList;
     private FilteredList<TimeAllocation> filteredAllocationList;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setupTable();
-        setupSearch();
         loadAllocations();
-        highlightCurrentSection();
+        setupSearch();
     }
 
     private void setupTable() {
-        columnClassroom.setCellValueFactory(cellData -> {
-            Classroom classroom = cellData.getValue().getClassroom();
-            return new SimpleStringProperty(classroom != null ? "Semester: " + classroom.getSemester() : "N/A");
-        });
-        columnRoom.setCellValueFactory(cellData -> {
-            Room room = cellData.getValue().getRoom();
-            return new SimpleStringProperty(room != null ? room.getName() : "N/A");
-        });
-        columnDay.setCellValueFactory(cellData -> {
-            TimeBlock timeBlock = cellData.getValue().getTimeBlock();
-            return new SimpleStringProperty(timeBlock != null ? timeBlock.getDayOfWeek().toString() : "N/A");
-        });
-        columnStartTime.setCellValueFactory(cellData -> {
-            TimeBlock timeBlock = cellData.getValue().getTimeBlock();
-            if (timeBlock != null && timeBlock.getStartTime() != null) {
-                return new SimpleStringProperty(timeBlock.getStartTime().format(DateTimeFormatter.ofPattern("HH:mm")));
-            }
-            return new SimpleStringProperty("N/A");
-        });
-        columnEndTime.setCellValueFactory(cellData -> {
-            TimeBlock timeBlock = cellData.getValue().getTimeBlock();
-            if (timeBlock != null && timeBlock.getEndTime() != null) {
-                return new SimpleStringProperty(timeBlock.getEndTime().format(DateTimeFormatter.ofPattern("HH:mm")));
-            }
-            return new SimpleStringProperty("N/A");
-        });
+        columnClassroom.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getClassroom() != null ? "Semester: " + cellData.getValue().getClassroom().getSemester() : "N/A"));
+        columnRoom.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getRoom() != null ? cellData.getValue().getRoom().getName() : "N/A"));
+        columnDay.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTimeBlock() != null ? cellData.getValue().getTimeBlock().getDayOfWeek().toString() : "N/A"));
+
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        columnStartTime.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTimeBlock() != null && cellData.getValue().getTimeBlock().getStartTime() != null ? timeFormatter.format(cellData.getValue().getTimeBlock().getStartTime()) : "N/A"));
+        columnEndTime.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTimeBlock() != null && cellData.getValue().getTimeBlock().getEndTime() != null ? timeFormatter.format(cellData.getValue().getTimeBlock().getEndTime()) : "N/A"));
 
         columnActions.setCellFactory(param -> new TableCell<>() {
             private final Button editButton = new Button("Edit");
@@ -109,33 +79,18 @@ public class DashBoardAllocationsController extends BaseDashboardController impl
             private final HBox buttonBox = new HBox(5, editButton, deleteButton);
 
             {
-                editButton.getStyleClass().add("edit-button");
-                deleteButton.getStyleClass().add("delete-button");
-                
-                editButton.setOnAction(event -> {
-                    TimeAllocation allocation = getTableView().getItems().get(getIndex());
-                    handleEditAllocation(allocation);
-                });
-                
-                deleteButton.setOnAction(event -> {
-                    TimeAllocation allocation = getTableView().getItems().get(getIndex());
-                    handleDeleteAllocation(allocation);
-                });
+                editButton.setOnAction(event -> handleEditAllocation(getTableView().getItems().get(getIndex())));
+                deleteButton.setOnAction(event -> handleDeleteAllocation(getTableView().getItems().get(getIndex())));
             }
 
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty) {
-                    setGraphic(null);
-                } else {
-                    setGraphic(buttonBox);
-                }
+                setGraphic(empty ? null : buttonBox);
             }
         });
 
         allocationTable.setPlaceholder(new Label("No allocations found"));
-        allocationTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
     }
 
     private void setupSearch() {
@@ -143,40 +98,13 @@ public class DashBoardAllocationsController extends BaseDashboardController impl
         filteredAllocationList = new FilteredList<>(allocationList, p -> true);
         allocationTable.setItems(filteredAllocationList);
 
-        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-            filteredAllocationList.setPredicate(allocation -> {
-                if (newValue == null || newValue.isEmpty()) {
-                    return true;
-                }
-
-                String lowerCaseFilter = newValue.toLowerCase();
-
-                if (allocation.getClassroom() != null && 
-                    allocation.getClassroom().getSemester().toLowerCase().contains(lowerCaseFilter)) {
-                    return true;
-                }
-
-                if (allocation.getRoom() != null && 
-                    allocation.getRoom().getName().toLowerCase().contains(lowerCaseFilter)) {
-                    return true;
-                }
-
-                if (allocation.getTimeBlock() != null && 
-                    allocation.getTimeBlock().getDayOfWeek().toString().toLowerCase().contains(lowerCaseFilter)) {
-                    return true;
-                }
-
-                if (allocation.getTimeBlock() != null) {
-                    String startTime = allocation.getTimeBlock().getStartTime() != null ? 
-                        allocation.getTimeBlock().getStartTime().format(DateTimeFormatter.ofPattern("HH:mm")) : "";
-                    String endTime = allocation.getTimeBlock().getEndTime() != null ? 
-                        allocation.getTimeBlock().getEndTime().format(DateTimeFormatter.ofPattern("HH:mm")) : "";
-                    
-                    if (startTime.contains(lowerCaseFilter) || endTime.contains(lowerCaseFilter)) {
-                        return true;
-                    }
-                }
-
+        searchField.textProperty().addListener((obs, oldVal, newVal) -> {
+            filteredAllocationList.setPredicate(alloc -> {
+                if (newVal == null || newVal.isEmpty()) return true;
+                String filter = newVal.toLowerCase();
+                if (alloc.getClassroom() != null && alloc.getClassroom().getSemester().toLowerCase().contains(filter)) return true;
+                if (alloc.getRoom() != null && alloc.getRoom().getName().toLowerCase().contains(filter)) return true;
+                if (alloc.getTimeBlock() != null && alloc.getTimeBlock().getDayOfWeek().toString().toLowerCase().contains(filter)) return true;
                 return false;
             });
         });
@@ -184,9 +112,7 @@ public class DashBoardAllocationsController extends BaseDashboardController impl
 
     private void loadAllocations() {
         try {
-            List<TimeAllocation> allocations = timeAllocationService.getAll();
-            allocationList.clear();
-            allocationList.addAll(allocations);
+            allocationList.setAll(timeAllocationService.getAll());
         } catch (Exception e) {
             showAlert("Error", "Failed to load allocations: " + e.getMessage(), Alert.AlertType.ERROR);
         }
@@ -194,42 +120,36 @@ public class DashBoardAllocationsController extends BaseDashboardController impl
 
     @FXML
     private void handleAddAllocation() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/view/AddPopUp/AddAllocationDialog.fxml"));
-            Parent root = loader.load();
-            
-            AddAllocationDialogController controller = loader.getController();
-            controller.setParentController(this);
-            
-            Stage stage = new Stage();
-            stage.setTitle("Add New Time Allocation");
-            stage.setScene(new Scene(root));
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.showAndWait();
-            
-        } catch (IOException e) {
-            showAlert("Error", "Failed to open add allocation dialog: " + e.getMessage(), Alert.AlertType.ERROR);
-        }
+        showAllocationDialog(null);
     }
 
-    @FXML
     private void handleEditAllocation(TimeAllocation allocation) {
+        showAllocationDialog(allocation);
+    }
+
+    private void showAllocationDialog(TimeAllocation allocation) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/view/EditPopUp/EditAllocationDialog.fxml"));
+            String fxmlFile = allocation == null ? "/org/example/view/AddPopUp/AddAllocationDialog.fxml" : "/org/example/view/EditPopUp/EditAllocationDialog.fxml";
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
             Parent root = loader.load();
-            
-            EditAllocationDialogController controller = loader.getController();
-            controller.setAllocation(allocation);
-            controller.setParentController(this);
-            
+
+            if (allocation == null) { // Add mode
+                AddAllocationDialogController controller = loader.getController();
+                controller.setParentController(this);
+            } else { // Edit mode
+                EditAllocationDialogController controller = loader.getController();
+                controller.setAllocation(allocation);
+                controller.setParentController(this);
+            }
+
             Stage stage = new Stage();
-            stage.setTitle("Edit Time Allocation");
+            stage.setTitle(allocation == null ? "Add New Time Allocation" : "Edit Time Allocation");
             stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.showAndWait();
-            
+
         } catch (IOException e) {
-            showAlert("Error", "Failed to open edit allocation dialog: " + e.getMessage(), Alert.AlertType.ERROR);
+            showAlert("Error", "Failed to open dialog: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 
@@ -237,33 +157,24 @@ public class DashBoardAllocationsController extends BaseDashboardController impl
     private void handleDeleteAllocation(TimeAllocation allocation) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirm Delete");
-        alert.setHeaderText("Delete Time Allocation");
-        alert.setContentText("Are you sure you want to delete this allocation?\n\n" +
-                           "Classroom: " + (allocation.getClassroom() != null ? "Semester: " + allocation.getClassroom().getSemester() : "N/A") + "\n" +
-                           "Room: " + (allocation.getRoom() != null ? allocation.getRoom().getName() : "N/A") + "\n" +
-                           "Time: " + (allocation.getTimeBlock() != null ? 
-                               allocation.getTimeBlock().getDayOfWeek() + " " +
-                               allocation.getTimeBlock().getStartTime() + "-" + allocation.getTimeBlock().getEndTime() : "N/A"));
+        alert.setHeaderText(null);
+        alert.setContentText("Are you sure you want to delete this allocation?");
 
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            try {
-                timeAllocationService.deleteById(allocation.getId());
-                allocationList.remove(allocation);
-                showAlert("Success", "Allocation deleted successfully!", Alert.AlertType.INFORMATION);
-            } catch (IOException e) {
-                showAlert("Error", "Failed to delete allocation: " + e.getMessage(), Alert.AlertType.ERROR);
+        alert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                try {
+                    timeAllocationService.deleteById(allocation.getId());
+                    allocationList.remove(allocation);
+                    showAlert("Success", "Allocation deleted successfully!", Alert.AlertType.INFORMATION);
+
+                } catch (NotFoundException e) {
+                    showAlert("Error", "Could not delete allocation: " + e.getMessage(), Alert.AlertType.ERROR);
+                } catch (IOException e) {
+                    showAlert("Error", "Failed to access data file: " + e.getMessage(), Alert.AlertType.ERROR);
+                }
             }
-        }
+        });
     }
-
-    @FXML
-    private void handleRefresh() {
-        loadAllocations();
-        searchField.clear();
-    }
-
-
 
     public void addAllocation(TimeAllocation allocation) {
         allocationList.add(allocation);
@@ -276,16 +187,6 @@ public class DashBoardAllocationsController extends BaseDashboardController impl
         }
     }
 
-    private void highlightCurrentSection() {
-        homeBox.getStyleClass().remove("active-section");
-        roomBox.getStyleClass().remove("active-section");
-        allocationBox.getStyleClass().add("active-section");
-        teacherBox.getStyleClass().remove("active-section");
-        subjectBox.getStyleClass().remove("active-section");
-        classroomBox.getStyleClass().remove("active-section");
-        reportsBox.getStyleClass().remove("active-section");
-    }
-
     private void showAlert(String title, String content, Alert.AlertType alertType) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
@@ -293,4 +194,4 @@ public class DashBoardAllocationsController extends BaseDashboardController impl
         alert.setContentText(content);
         alert.showAndWait();
     }
-} 
+}

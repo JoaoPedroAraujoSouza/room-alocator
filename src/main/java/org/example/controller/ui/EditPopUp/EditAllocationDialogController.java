@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import org.example.controller.ui.DashBoardAllocationsController;
+import org.example.exceptions.ConflictException; // Import necessário
+import org.example.exceptions.NotFoundException; // Import necessário
 import org.example.models.Classroom;
 import org.example.models.Room;
 import org.example.models.TimeAllocation;
@@ -45,7 +47,7 @@ public class EditAllocationDialogController implements Initializable {
     private final RoomService roomService = new RoomService();
     private final TimeBlockService timeBlockService = new TimeBlockService();
     private final TimeAllocationService timeAllocationService = new TimeAllocationService();
-    
+
     private DashBoardAllocationsController parentController;
     private TimeAllocation currentAllocation;
 
@@ -57,16 +59,10 @@ public class EditAllocationDialogController implements Initializable {
     }
 
     private void setupSpinners() {
-        SpinnerValueFactory<Integer> startHourFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 8);
-        SpinnerValueFactory<Integer> endHourFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 9);
-        startHourSpinner.setValueFactory(startHourFactory);
-        endHourSpinner.setValueFactory(endHourFactory);
-
-        SpinnerValueFactory<Integer> startMinuteFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0, 15);
-        SpinnerValueFactory<Integer> endMinuteFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0, 15);
-        startMinuteSpinner.setValueFactory(startMinuteFactory);
-        endMinuteSpinner.setValueFactory(endMinuteFactory);
-
+        startHourSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 8));
+        endHourSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 9));
+        startMinuteSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0, 15));
+        endMinuteSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0, 15));
         startHourSpinner.setEditable(true);
         startMinuteSpinner.setEditable(true);
         endHourSpinner.setEditable(true);
@@ -75,84 +71,43 @@ public class EditAllocationDialogController implements Initializable {
 
     private void setupComboBoxes() {
         try {
-            List<Classroom> classrooms = classroomService.getAll();
-            ObservableList<Classroom> classroomList = FXCollections.observableArrayList(classrooms);
-            classroomComboBox.setItems(classroomList);
-            
-            classroomComboBox.setCellFactory(param -> new ListCell<Classroom>() {
+            classroomComboBox.setItems(FXCollections.observableArrayList(classroomService.getAll()));
+            classroomComboBox.setCellFactory(param -> new ListCell<>() {
                 @Override
                 protected void updateItem(Classroom item, boolean empty) {
                     super.updateItem(item, empty);
-                    if (empty || item == null) {
-                        setText(null);
-                    } else {
-                        setText("Semester: " + item.getSemester() + " (Shift: " + item.getShift() + ")");
-                    }
+                    setText(empty || item == null ? null : "Semester: " + item.getSemester() + " (Shift: " + item.getShift() + ")");
                 }
             });
-            
             classroomComboBox.setButtonCell(classroomComboBox.getCellFactory().call(null));
-        } catch (Exception e) {
-            showAlert("Error", "Failed to load classrooms: " + e.getMessage(), Alert.AlertType.ERROR);
-        }
 
-        try {
-            List<Room> rooms = roomService.getAll();
-            ObservableList<Room> roomList = FXCollections.observableArrayList(rooms);
-            roomComboBox.setItems(roomList);
-
-            roomComboBox.setCellFactory(param -> new ListCell<Room>() {
+            roomComboBox.setItems(FXCollections.observableArrayList(roomService.getAll()));
+            roomComboBox.setCellFactory(param -> new ListCell<>() {
                 @Override
                 protected void updateItem(Room item, boolean empty) {
                     super.updateItem(item, empty);
-                    if (empty || item == null) {
-                        setText(null);
-                    } else {
-                        setText(item.getName() + " (Capacity: " + item.getCapacity() + ")");
-                    }
+                    setText(empty || item == null ? null : item.getName() + " (Capacity: " + item.getCapacity() + ")");
                 }
             });
-
             roomComboBox.setButtonCell(roomComboBox.getCellFactory().call(null));
-        } catch (Exception e) {
-            showAlert("Error", "Failed to load rooms: " + e.getMessage(), Alert.AlertType.ERROR);
-        }
 
-        ObservableList<DayOfWeek> dayList = FXCollections.observableArrayList(DayOfWeek.values());
-        dayComboBox.setItems(dayList);
- 
-        dayComboBox.setCellFactory(param -> new ListCell<DayOfWeek>() {
-            @Override
-            protected void updateItem(DayOfWeek item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setText(null);
-                } else {
-                    setText(item.toString());
-                }
-            }
-        });
-        
-        dayComboBox.setButtonCell(dayComboBox.getCellFactory().call(null));
+            dayComboBox.setItems(FXCollections.observableArrayList(DayOfWeek.values()));
+        } catch (Exception e) {
+            showAlert("Error", "Failed to load data: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
     }
 
     private void setupValidation() {
-
-        startHourSpinner.valueProperty().addListener((obs, oldVal, newVal) -> validateTime());
-        startMinuteSpinner.valueProperty().addListener((obs, oldVal, newVal) -> validateTime());
-        endHourSpinner.valueProperty().addListener((obs, oldVal, newVal) -> validateTime());
-        endMinuteSpinner.valueProperty().addListener((obs, oldVal, newVal) -> validateTime());
+        startHourSpinner.valueProperty().addListener((obs, old, val) -> validateTime());
+        startMinuteSpinner.valueProperty().addListener((obs, old, val) -> validateTime());
+        endHourSpinner.valueProperty().addListener((obs, old, val) -> validateTime());
+        endMinuteSpinner.valueProperty().addListener((obs, old, val) -> validateTime());
     }
 
     private void validateTime() {
         LocalTime startTime = LocalTime.of(startHourSpinner.getValue(), startMinuteSpinner.getValue());
         LocalTime endTime = LocalTime.of(endHourSpinner.getValue(), endMinuteSpinner.getValue());
-        
-        if (endTime.isBefore(startTime) || endTime.equals(startTime)) {
-            saveButton.setDisable(true);
-        } else {
-            saveButton.setDisable(false);
-        }
+        saveButton.setDisable(endTime.isBefore(startTime) || endTime.equals(startTime));
     }
 
     public void setAllocation(TimeAllocation allocation) {
@@ -162,27 +117,15 @@ public class EditAllocationDialogController implements Initializable {
 
     private void populateFields() {
         if (currentAllocation == null) return;
-
-        if (currentAllocation.getClassroom() != null) {
-            classroomComboBox.setValue(currentAllocation.getClassroom());
-        }
-
-        if (currentAllocation.getRoom() != null) {
-            roomComboBox.setValue(currentAllocation.getRoom());
-        }
-
-        if (currentAllocation.getTimeBlock() != null) {
-            TimeBlock timeBlock = currentAllocation.getTimeBlock();
-
-            if (timeBlock.getDayOfWeek() != null) {
-                dayComboBox.setValue(timeBlock.getDayOfWeek());
-            }
-
+        classroomComboBox.setValue(currentAllocation.getClassroom());
+        roomComboBox.setValue(currentAllocation.getRoom());
+        TimeBlock timeBlock = currentAllocation.getTimeBlock();
+        if (timeBlock != null) {
+            dayComboBox.setValue(timeBlock.getDayOfWeek());
             if (timeBlock.getStartTime() != null) {
                 startHourSpinner.getValueFactory().setValue(timeBlock.getStartTime().getHour());
                 startMinuteSpinner.getValueFactory().setValue(timeBlock.getStartTime().getMinute());
             }
-
             if (timeBlock.getEndTime() != null) {
                 endHourSpinner.getValueFactory().setValue(timeBlock.getEndTime().getHour());
                 endMinuteSpinner.getValueFactory().setValue(timeBlock.getEndTime().getMinute());
@@ -192,27 +135,22 @@ public class EditAllocationDialogController implements Initializable {
 
     @FXML
     private void handleSave() {
-        if (!validateInput()) {
-            return;
-        }
+        if (!validateInput()) return;
 
         try {
-            LocalTime startTime = LocalTime.of(startHourSpinner.getValue(), startMinuteSpinner.getValue());
-            LocalTime endTime = LocalTime.of(endHourSpinner.getValue(), endMinuteSpinner.getValue());
-            
             TimeBlock updatedTimeBlock = new TimeBlock(
-                currentAllocation.getTimeBlock().getId(),
-                dayComboBox.getValue(),
-                startTime,
-                endTime
+                    currentAllocation.getTimeBlock().getId(),
+                    dayComboBox.getValue(),
+                    LocalTime.of(startHourSpinner.getValue(), startMinuteSpinner.getValue()),
+                    LocalTime.of(endHourSpinner.getValue(), endMinuteSpinner.getValue())
             );
 
             TimeAllocation updatedAllocation = new TimeAllocation(
-                currentAllocation.getId(),
-                currentAllocation.getUuid(),
-                classroomComboBox.getValue(),
-                roomComboBox.getValue(),
-                updatedTimeBlock
+                    currentAllocation.getId(),
+                    currentAllocation.getUuid(),
+                    classroomComboBox.getValue(),
+                    roomComboBox.getValue(),
+                    updatedTimeBlock
             );
 
             timeAllocationService.update(updatedAllocation);
@@ -224,8 +162,12 @@ public class EditAllocationDialogController implements Initializable {
             showAlert("Success", "Time allocation updated successfully!", Alert.AlertType.INFORMATION);
             closeDialog();
 
+        } catch (ConflictException e) {
+            showAlert("Conflict Error", "Could not update allocation: " + e.getMessage(), Alert.AlertType.ERROR);
+        } catch (NotFoundException e) {
+            showAlert("Not Found Error", "Could not update allocation: " + e.getMessage(), Alert.AlertType.ERROR);
         } catch (IOException e) {
-            showAlert("Error", "Failed to update allocation: " + e.getMessage(), Alert.AlertType.ERROR);
+            showAlert("File Error", "Failed to update allocation: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 
@@ -235,29 +177,16 @@ public class EditAllocationDialogController implements Initializable {
     }
 
     private boolean validateInput() {
-        if (classroomComboBox.getValue() == null) {
-            showAlert("Validation Error", "Please select a classroom.", Alert.AlertType.WARNING);
+        if (classroomComboBox.getValue() == null || roomComboBox.getValue() == null || dayComboBox.getValue() == null) {
+            showAlert("Validation Error", "Please fill all fields.", Alert.AlertType.WARNING);
             return false;
         }
-
-        if (roomComboBox.getValue() == null) {
-            showAlert("Validation Error", "Please select a room.", Alert.AlertType.WARNING);
-            return false;
-        }
-
-        if (dayComboBox.getValue() == null) {
-            showAlert("Validation Error", "Please select a day of week.", Alert.AlertType.WARNING);
-            return false;
-        }
-
         LocalTime startTime = LocalTime.of(startHourSpinner.getValue(), startMinuteSpinner.getValue());
         LocalTime endTime = LocalTime.of(endHourSpinner.getValue(), endMinuteSpinner.getValue());
-
         if (endTime.isBefore(startTime) || endTime.equals(startTime)) {
             showAlert("Validation Error", "End time must be after start time.", Alert.AlertType.WARNING);
             return false;
         }
-
         return true;
     }
 
@@ -277,4 +206,4 @@ public class EditAllocationDialogController implements Initializable {
         alert.setContentText(content);
         alert.showAndWait();
     }
-} 
+}

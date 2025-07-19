@@ -9,7 +9,15 @@ import java.util.List;
 import java.util.Optional;
 
 public class TimeBlockService extends AbstractService<TimeBlock> implements TimeBlockServiceInterface {
-    private final TimeBlockRepository repository = new TimeBlockRepository();
+    private final TimeBlockRepository repository;
+
+    public TimeBlockService(TimeBlockRepository repository) {
+        this.repository = repository;
+    }
+
+    public TimeBlockService() {
+        this.repository = new TimeBlockRepository();
+    }
 
     @Override
     public List<TimeBlock> getAll() {

@@ -9,7 +9,15 @@ import java.util.List;
 import java.util.Optional;
 
 public class TeacherSubjectLinkService extends AbstractService<TeacherSubjectLink> implements TeacherSubjectLinkServiceInterface {
-    private final TeacherSubjectLinkRepository repository = new TeacherSubjectLinkRepository();
+    private final TeacherSubjectLinkRepository repository;
+
+    public TeacherSubjectLinkService(TeacherSubjectLinkRepository repository) {
+        this.repository = repository;
+    }
+
+    public TeacherSubjectLinkService() {
+        this.repository = new TeacherSubjectLinkRepository();
+    }
 
     @Override
     public List<TeacherSubjectLink> getAll() {
