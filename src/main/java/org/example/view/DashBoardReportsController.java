@@ -1,21 +1,31 @@
 package org.example.view;
 
-import org.example.view.BaseDashboardController;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.properties.UnitValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.cell.PropertyValueFactory;
-import org.example.models.TimeAllocation;
-import org.example.models.Room;
+import javafx.stage.FileChooser;
 import org.example.models.Classroom;
+import org.example.models.Room;
 import org.example.models.Subject;
-import org.example.service.TimeAllocationService;
-import org.example.service.RoomService;
+import org.example.models.TimeAllocation;
 import org.example.service.ClassroomService;
+import org.example.service.RoomService;
 import org.example.service.SubjectService;
+import org.example.service.TimeAllocationService;
+
+import java.io.File;
+import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.*;
@@ -26,7 +36,7 @@ public class DashBoardReportsController extends BaseDashboardController {
     private TableView<ReportRow> reportTable;
     @FXML
     private TableColumn<ReportRow, String> dayColumn;
-    
+
     @FXML
     private TableView<RoomUsageRow> roomUsageTable;
     @FXML
@@ -37,7 +47,7 @@ public class DashBoardReportsController extends BaseDashboardController {
     private TableColumn<RoomUsageRow, String> mostUsedSlotColumn;
     @FXML
     private TableColumn<RoomUsageRow, String> totalAllocationsColumn;
-    
+
     @FXML
     private TableView<ClassroomDistributionRow> classroomDistributionTable;
     @FXML
@@ -89,9 +99,9 @@ public class DashBoardReportsController extends BaseDashboardController {
 
     private void setupWeeklyAllocationsTable() {
         dayColumn.setCellValueFactory(new PropertyValueFactory<>("dayOfWeek"));
-        
+
         List<TimeAllocation> allAllocations = timeAllocationService.getAll();
-        
+
         Set<String> customTimeSlots = new HashSet<>();
         for (TimeAllocation allocation : allAllocations) {
             if (allocation.getTimeBlock() != null) {
@@ -103,27 +113,27 @@ public class DashBoardReportsController extends BaseDashboardController {
                 }
             }
         }
-        
+
         for (String customSlot : customTimeSlots) {
             addCustomTimeColumn(customSlot);
         }
-        
+
         Map<DayOfWeek, Map<String, List<TimeAllocation>>> groupedByDayAndTime = groupAllocationsByDayAndTime(allAllocations);
-        
+
         ObservableList<ReportRow> rows = FXCollections.observableArrayList();
         for (DayOfWeek day : DayOfWeek.values()) {
             ReportRow row = new ReportRow(day.toString());
             Map<String, List<TimeAllocation>> dayAllocs = groupedByDayAndTime.getOrDefault(day, new HashMap<>());
-            
+
             for (String timeSlot : timeColumns.keySet()) {
                 List<TimeAllocation> timeAllocs = dayAllocs.getOrDefault(timeSlot, Collections.emptyList());
                 String allocsText = timeAllocs.stream()
-                    .map(a -> {
-                        String classroom = a.getClassroom() != null ? a.getClassroom().getSemester() : "N/A";
-                        String room = a.getRoom() != null ? a.getRoom().getName() : "N/A";
-                        return String.format("%s - %s", room, classroom);
-                    })
-                    .collect(Collectors.joining("; "));
+                        .map(a -> {
+                            String classroom = a.getClassroom() != null ? a.getClassroom().getSemester() : "N/A";
+                            String room = a.getRoom() != null ? a.getRoom().getName() : "N/A";
+                            return String.format("%s - %s", room, classroom);
+                        })
+                        .collect(Collectors.joining("; "));
                 row.setTimeSlotAllocation(timeSlot, allocsText.isEmpty() ? "Empty" : allocsText);
             }
             rows.add(row);
@@ -139,36 +149,36 @@ public class DashBoardReportsController extends BaseDashboardController {
 
         List<Room> rooms = roomService.getAll();
         List<TimeAllocation> allAllocations = timeAllocationService.getAll();
-        
+
         ObservableList<RoomUsageRow> rows = FXCollections.observableArrayList();
-        
+
         for (Room room : rooms) {
             List<TimeAllocation> roomAllocations = allAllocations.stream()
-                .filter(a -> a.getRoom() != null && a.getRoom().getId() == room.getId())
-                .collect(Collectors.toList());
-            
+                    .filter(a -> a.getRoom() != null && a.getRoom().getId() == room.getId())
+                    .collect(Collectors.toList());
+
             double occupancyRate = (double) roomAllocations.size() / 25.0 * 100.0;
-            
+
             Map<String, Long> slotUsage = roomAllocations.stream()
-                .filter(a -> a.getTimeBlock() != null)
-                .collect(Collectors.groupingBy(
-                    a -> getIntersectingTimeSlots(a.getTimeBlock().getStartTime(), a.getTimeBlock().getEndTime()).get(0),
-                    Collectors.counting()
-                ));
-            
+                    .filter(a -> a.getTimeBlock() != null)
+                    .collect(Collectors.groupingBy(
+                            a -> getIntersectingTimeSlots(a.getTimeBlock().getStartTime(), a.getTimeBlock().getEndTime()).get(0),
+                            Collectors.counting()
+                    ));
+
             String mostUsedSlot = slotUsage.entrySet().stream()
-                .max(Map.Entry.comparingByValue())
-                .map(Map.Entry::getKey)
-                .orElse("None");
-            
+                    .max(Map.Entry.comparingByValue())
+                    .map(Map.Entry::getKey)
+                    .orElse("None");
+
             rows.add(new RoomUsageRow(
-                room.getName(),
-                String.format("%.1f%%", occupancyRate),
-                mostUsedSlot,
-                String.valueOf(roomAllocations.size())
+                    room.getName(),
+                    String.format("%.1f%%", occupancyRate),
+                    mostUsedSlot,
+                    String.valueOf(roomAllocations.size())
             ));
         }
-        
+
         roomUsageTable.setItems(rows);
     }
 
@@ -184,94 +194,94 @@ public class DashBoardReportsController extends BaseDashboardController {
     private void updateClassroomDistributionTable(String selectedType) {
         List<Classroom> classrooms = classroomService.getAll();
         List<TimeAllocation> allAllocations = timeAllocationService.getAll();
-        
+
         allDistributionRows.clear();
-        
+
         if ("Shift".equals(selectedType)) {
             Map<String, List<Classroom>> shiftDistribution = classrooms.stream()
-                .collect(Collectors.groupingBy(c -> c.getShift() != null ? c.getShift().toString() : "Not Assigned"));
-            
+                    .collect(Collectors.groupingBy(c -> c.getShift() != null ? c.getShift().toString() : "Not Assigned"));
+
             for (Map.Entry<String, List<Classroom>> entry : shiftDistribution.entrySet()) {
                 String shift = entry.getKey();
                 List<Classroom> shiftClassrooms = entry.getValue();
                 long allocationCount = allAllocations.stream()
-                    .filter(a -> a.getClassroom() != null && shiftClassrooms.contains(a.getClassroom()))
-                    .count();
-                
+                        .filter(a -> a.getClassroom() != null && shiftClassrooms.contains(a.getClassroom()))
+                        .count();
+
                 String classroomsList = shiftClassrooms.stream()
-                    .map(c -> c.getSemester())
-                    .collect(Collectors.joining(", "));
-                
+                        .map(c -> c.getSemester())
+                        .collect(Collectors.joining(", "));
+
                 allDistributionRows.add(new ClassroomDistributionRow(
-                    shift,
-                    classroomsList,
-                    String.valueOf(allocationCount)
+                        shift,
+                        classroomsList,
+                        String.valueOf(allocationCount)
                 ));
             }
         }
-        
+
         if ("Teacher".equals(selectedType)) {
             Map<String, List<Classroom>> teacherDistribution = classrooms.stream()
-                .filter(c -> c.getResponsibleTeacher() != null)
-                .collect(Collectors.groupingBy(c -> c.getResponsibleTeacher().getName()));
-            
+                    .filter(c -> c.getResponsibleTeacher() != null)
+                    .collect(Collectors.groupingBy(c -> c.getResponsibleTeacher().getName()));
+
             for (Map.Entry<String, List<Classroom>> entry : teacherDistribution.entrySet()) {
                 String teacher = entry.getKey();
                 List<Classroom> teacherClassrooms = entry.getValue();
                 long allocationCount = allAllocations.stream()
-                    .filter(a -> a.getClassroom() != null && teacherClassrooms.contains(a.getClassroom()))
-                    .count();
-                
+                        .filter(a -> a.getClassroom() != null && teacherClassrooms.contains(a.getClassroom()))
+                        .count();
+
                 String classroomsList = teacherClassrooms.stream()
-                    .map(c -> c.getSemester())
-                    .collect(Collectors.joining(", "));
-                
+                        .map(c -> c.getSemester())
+                        .collect(Collectors.joining(", "));
+
                 allDistributionRows.add(new ClassroomDistributionRow(
-                    teacher,
-                    classroomsList,
-                    String.valueOf(allocationCount)
+                        teacher,
+                        classroomsList,
+                        String.valueOf(allocationCount)
                 ));
             }
         }
-        
+
         if ("Subject".equals(selectedType)) {
             try {
                 List<Subject> subjects = subjectService.getAll();
                 for (Subject subject : subjects) {
 
                     List<Classroom> subjectClassrooms = classrooms.stream()
-                        .filter(c -> c.getResponsibleTeacher() != null)
-                        .collect(Collectors.toList());
-                    
+                            .filter(c -> c.getResponsibleTeacher() != null)
+                            .collect(Collectors.toList());
+
                     if (!subjectClassrooms.isEmpty()) {
                         long allocationCount = allAllocations.stream()
-                            .filter(a -> a.getClassroom() != null && subjectClassrooms.contains(a.getClassroom()))
-                            .count();
-                        
+                                .filter(a -> a.getClassroom() != null && subjectClassrooms.contains(a.getClassroom()))
+                                .count();
+
                         String classroomsList = subjectClassrooms.stream()
-                            .map(c -> c.getSemester())
-                            .collect(Collectors.joining(", "));
-                        
+                                .map(c -> c.getSemester())
+                                .collect(Collectors.joining(", "));
+
                         allDistributionRows.add(new ClassroomDistributionRow(
-                            subject.getName(),
-                            classroomsList,
-                            String.valueOf(allocationCount)
+                                subject.getName(),
+                                classroomsList,
+                                String.valueOf(allocationCount)
                         ));
                     }
                 }
             } catch (Exception e) {
-                
+
             }
         }
-        
+
         classroomDistributionTable.setItems(allDistributionRows);
     }
 
     private void setupTimeColumns() {
         List<String> timeSlots = Arrays.asList(
-            "08:00-10:00", "10:00-12:00", "14:00-16:00", "16:00-18:00", "19:00-22:00"
+                "08:00-10:00", "10:00-12:00", "14:00-16:00", "16:00-18:00", "19:00-22:00"
         );
-        
+
         for (String timeSlot : timeSlots) {
             TableColumn<ReportRow, String> column = new TableColumn<>(timeSlot);
             column.setPrefWidth(160);
@@ -296,42 +306,42 @@ public class DashBoardReportsController extends BaseDashboardController {
 
     private Map<DayOfWeek, Map<String, List<TimeAllocation>>> groupAllocationsByDayAndTime(List<TimeAllocation> allocations) {
         Map<DayOfWeek, Map<String, List<TimeAllocation>>> result = new HashMap<>();
-        
+
         for (TimeAllocation allocation : allocations) {
             if (allocation.getTimeBlock() == null) continue;
-            
+
             DayOfWeek day = allocation.getTimeBlock().getDayOfWeek();
             List<String> timeSlots = getIntersectingTimeSlots(allocation.getTimeBlock().getStartTime(), allocation.getTimeBlock().getEndTime());
-            
+
             for (String timeSlot : timeSlots) {
                 result.computeIfAbsent(day, k -> new HashMap<>())
-                      .computeIfAbsent(timeSlot, k -> new ArrayList<>())
-                      .add(allocation);
+                        .computeIfAbsent(timeSlot, k -> new ArrayList<>())
+                        .add(allocation);
             }
         }
-        
+
         return result;
     }
 
     private List<String> getIntersectingTimeSlots(LocalTime start, LocalTime end) {
         if (start == null || end == null) return Arrays.asList("Unknown");
-        
+
 
         Map<String, LocalTime[]> timeSlots = Map.of(
-            "08:00-10:00", new LocalTime[]{LocalTime.of(8, 0), LocalTime.of(10, 0)},
-            "10:00-12:00", new LocalTime[]{LocalTime.of(10, 0), LocalTime.of(12, 0)},
-            "14:00-16:00", new LocalTime[]{LocalTime.of(14, 0), LocalTime.of(16, 0)},
-            "16:00-18:00", new LocalTime[]{LocalTime.of(16, 0), LocalTime.of(18, 0)},
-            "19:00-22:00", new LocalTime[]{LocalTime.of(19, 0), LocalTime.of(22, 0)}
+                "08:00-10:00", new LocalTime[]{LocalTime.of(8, 0), LocalTime.of(10, 0)},
+                "10:00-12:00", new LocalTime[]{LocalTime.of(10, 0), LocalTime.of(12, 0)},
+                "14:00-16:00", new LocalTime[]{LocalTime.of(14, 0), LocalTime.of(16, 0)},
+                "16:00-18:00", new LocalTime[]{LocalTime.of(16, 0), LocalTime.of(18, 0)},
+                "19:00-22:00", new LocalTime[]{LocalTime.of(19, 0), LocalTime.of(22, 0)}
         );
-        
-      
+
+
         List<String> intersectingSlots = new ArrayList<>();
         for (Map.Entry<String, LocalTime[]> entry : timeSlots.entrySet()) {
             String slotName = entry.getKey();
             LocalTime slotStart = entry.getValue()[0];
             LocalTime slotEnd = entry.getValue()[1];
-            
+
             if (!(end.isBefore(slotStart) || start.isAfter(slotEnd))) {
                 intersectingSlots.add(slotName);
             }
@@ -341,7 +351,7 @@ public class DashBoardReportsController extends BaseDashboardController {
             String customSlot = String.format("%02d:%02d-%02d:%02d", start.getHour(), start.getMinute(), end.getHour(), end.getMinute());
             return Arrays.asList(customSlot);
         }
-        
+
         return intersectingSlots;
     }
 
@@ -359,17 +369,17 @@ public class DashBoardReportsController extends BaseDashboardController {
         }
 
         public String getDayOfWeek() { return dayOfWeek; }
-        
+
         public void setTimeSlotAllocation(String timeSlot, String allocation) {
             timeSlotAllocations.put(timeSlot, allocation);
         }
-        
+
         public String get08001000() { return timeSlotAllocations.getOrDefault("08:00-10:00", "Empty"); }
         public String get10001200() { return timeSlotAllocations.getOrDefault("10:00-12:00", "Empty"); }
         public String get14001600() { return timeSlotAllocations.getOrDefault("14:00-16:00", "Empty"); }
         public String get16001800() { return timeSlotAllocations.getOrDefault("16:00-18:00", "Empty"); }
         public String get19002200() { return timeSlotAllocations.getOrDefault("19:00-22:00", "Empty"); }
-        
+
         public String getCustomTimeSlot(String timeSlot) {
             return timeSlotAllocations.getOrDefault(timeSlot, "Empty");
         }
@@ -412,16 +422,122 @@ public class DashBoardReportsController extends BaseDashboardController {
 
     @FXML
     private void handleWeeklyAllocationsExportPDF() {
-        // voa maranhão
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
+        File file = fileChooser.showSaveDialog(reportTable.getScene().getWindow());
+
+        if (file != null) {
+            try (PdfWriter writer = new PdfWriter(file);
+                 PdfDocument pdf = new PdfDocument(writer);
+                 Document document = new Document(pdf)) {
+
+                document.add(new Paragraph("Weekly Allocations Report").setBold().setFontSize(18));
+
+                float[] columnWidths = new float[reportTable.getColumns().size()];
+                Arrays.fill(columnWidths, 1);
+                Table pdfTable = new Table(UnitValue.createPercentArray(columnWidths));
+                pdfTable.setWidth(UnitValue.createPercentValue(100));
+
+
+                for (TableColumn<ReportRow, ?> column : reportTable.getColumns()) {
+                    pdfTable.addHeaderCell(column.getText());
+                }
+
+                for (ReportRow item : reportTable.getItems()) {
+                    pdfTable.addCell(item.getDayOfWeek());
+                    for (TableColumn<ReportRow, ?> column : reportTable.getColumns().subList(1, reportTable.getColumns().size())) {
+                        String cellValue = (String) column.getCellObservableValue(item).getValue();
+                        pdfTable.addCell(cellValue);
+                    }
+                }
+
+                document.add(pdfTable);
+                showAlert(Alert.AlertType.INFORMATION, "Success", "Report exported successfully to PDF.");
+            } catch (IOException e) {
+                showAlert(Alert.AlertType.ERROR, "Error", "Failed to export report to PDF: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
     }
 
     @FXML
     private void handleRoomUsageExportPDF() {
-        // voa maranhão
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
+        File file = fileChooser.showSaveDialog(roomUsageTable.getScene().getWindow());
+
+        if (file != null) {
+            try (PdfWriter writer = new PdfWriter(file);
+                 PdfDocument pdf = new PdfDocument(writer);
+                 Document document = new Document(pdf)) {
+
+                document.add(new Paragraph("Room Usage Report").setBold().setFontSize(18));
+
+                Table pdfTable = new Table(UnitValue.createPercentArray(new float[]{3, 2, 3, 2}));
+                pdfTable.setWidth(UnitValue.createPercentValue(100));
+
+                pdfTable.addHeaderCell("Room");
+                pdfTable.addHeaderCell("Occupancy Rate");
+                pdfTable.addHeaderCell("Most Used Time Slot");
+                pdfTable.addHeaderCell("Total Allocations");
+
+                for (RoomUsageRow item : roomUsageTable.getItems()) {
+                    pdfTable.addCell(item.getRoomName());
+                    pdfTable.addCell(item.getOccupancyRate());
+                    pdfTable.addCell(item.getMostUsedSlot());
+                    pdfTable.addCell(item.getTotalAllocations());
+                }
+
+                document.add(pdfTable);
+                showAlert(Alert.AlertType.INFORMATION, "Success", "Report exported successfully to PDF.");
+            } catch (IOException e) {
+                showAlert(Alert.AlertType.ERROR, "Error", "Failed to export report to PDF: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
     }
 
     @FXML
     private void handleClassroomDistributionExportPDF() {
-        // voa maranhão
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
+        File file = fileChooser.showSaveDialog(classroomDistributionTable.getScene().getWindow());
+
+        if (file != null) {
+            try (PdfWriter writer = new PdfWriter(file);
+                 PdfDocument pdf = new PdfDocument(writer);
+                 Document document = new Document(pdf)) {
+
+                document.add(new Paragraph("Classroom Distribution Report").setBold().setFontSize(18));
+
+                Table pdfTable = new Table(UnitValue.createPercentArray(new float[]{2, 3, 2}));
+                pdfTable.setWidth(UnitValue.createPercentValue(100));
+
+
+                pdfTable.addHeaderCell(distributionValueColumn.getText());
+                pdfTable.addHeaderCell(classroomCountColumn.getText());
+                pdfTable.addHeaderCell(allocationCountColumn.getText());
+
+                for (ClassroomDistributionRow item : classroomDistributionTable.getItems()) {
+                    pdfTable.addCell(item.getDistributionValue());
+                    pdfTable.addCell(item.getClassroomCount());
+                    pdfTable.addCell(item.getAllocationCount());
+                }
+
+                document.add(pdfTable);
+                showAlert(Alert.AlertType.INFORMATION, "Success", "Report exported successfully to PDF.");
+            } catch (IOException e) {
+                showAlert(Alert.AlertType.ERROR, "Error", "Failed to export report to PDF: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
     }
-} 
+
+    private void showAlert(Alert.AlertType alertType, String title, String content) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+}
