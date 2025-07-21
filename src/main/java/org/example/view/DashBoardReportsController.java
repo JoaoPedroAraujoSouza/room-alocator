@@ -25,7 +25,9 @@ import org.example.service.SubjectService;
 import org.example.service.TimeAllocationService;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.*;
@@ -209,7 +211,7 @@ public class DashBoardReportsController extends BaseDashboardController {
                         .count();
 
                 String classroomsList = shiftClassrooms.stream()
-                        .map(c -> c.getSemester())
+                        .map(Classroom::getSemester)
                         .collect(Collectors.joining(", "));
 
                 allDistributionRows.add(new ClassroomDistributionRow(
@@ -233,7 +235,7 @@ public class DashBoardReportsController extends BaseDashboardController {
                         .count();
 
                 String classroomsList = teacherClassrooms.stream()
-                        .map(c -> c.getSemester())
+                        .map(Classroom::getSemester)
                         .collect(Collectors.joining(", "));
 
                 allDistributionRows.add(new ClassroomDistributionRow(
@@ -259,7 +261,7 @@ public class DashBoardReportsController extends BaseDashboardController {
                                 .count();
 
                         String classroomsList = subjectClassrooms.stream()
-                                .map(c -> c.getSemester())
+                                .map(Classroom::getSemester)
                                 .collect(Collectors.joining(", "));
 
                         allDistributionRows.add(new ClassroomDistributionRow(
@@ -270,7 +272,6 @@ public class DashBoardReportsController extends BaseDashboardController {
                     }
                 }
             } catch (Exception e) {
-
             }
         }
 
@@ -279,7 +280,7 @@ public class DashBoardReportsController extends BaseDashboardController {
 
     private void setupTimeColumns() {
         List<String> timeSlots = Arrays.asList(
-                "08:00-10:00", "10:00-12:00", "14:00-16:00", "16:00-18:00", "19:00-22:00"
+                "08:00-10:00", "10:00-12:00", "14:00-16:00", "16:00-18:00", "18:00-20:00"
         );
 
         for (String timeSlot : timeSlots) {
@@ -324,17 +325,15 @@ public class DashBoardReportsController extends BaseDashboardController {
     }
 
     private List<String> getIntersectingTimeSlots(LocalTime start, LocalTime end) {
-        if (start == null || end == null) return Arrays.asList("Unknown");
-
+        if (start == null || end == null) return Collections.singletonList("Unknown");
 
         Map<String, LocalTime[]> timeSlots = Map.of(
                 "08:00-10:00", new LocalTime[]{LocalTime.of(8, 0), LocalTime.of(10, 0)},
                 "10:00-12:00", new LocalTime[]{LocalTime.of(10, 0), LocalTime.of(12, 0)},
                 "14:00-16:00", new LocalTime[]{LocalTime.of(14, 0), LocalTime.of(16, 0)},
                 "16:00-18:00", new LocalTime[]{LocalTime.of(16, 0), LocalTime.of(18, 0)},
-                "19:00-22:00", new LocalTime[]{LocalTime.of(19, 0), LocalTime.of(22, 0)}
+                "18:00-20:00", new LocalTime[]{LocalTime.of(19, 0), LocalTime.of(22, 0)}
         );
-
 
         List<String> intersectingSlots = new ArrayList<>();
         for (Map.Entry<String, LocalTime[]> entry : timeSlots.entrySet()) {
@@ -342,24 +341,18 @@ public class DashBoardReportsController extends BaseDashboardController {
             LocalTime slotStart = entry.getValue()[0];
             LocalTime slotEnd = entry.getValue()[1];
 
-            if (!(end.isBefore(slotStart) || start.isAfter(slotEnd))) {
+            if ((end.isBefore(slotStart) && start.isAfter(slotEnd))) {
                 intersectingSlots.add(slotName);
             }
         }
 
         if (intersectingSlots.isEmpty()) {
             String customSlot = String.format("%02d:%02d-%02d:%02d", start.getHour(), start.getMinute(), end.getHour(), end.getMinute());
-            return Arrays.asList(customSlot);
+            return Collections.singletonList(customSlot);
         }
 
         return intersectingSlots;
     }
-
-    private String getTimeSlot(LocalTime start, LocalTime end) {
-        List<String> slots = getIntersectingTimeSlots(start, end);
-        return slots.get(0); // Keep for backward compatibility
-    }
-
     public static class ReportRow {
         private final String dayOfWeek;
         private final Map<String, String> timeSlotAllocations = new HashMap<>();
@@ -378,7 +371,7 @@ public class DashBoardReportsController extends BaseDashboardController {
         public String get10001200() { return timeSlotAllocations.getOrDefault("10:00-12:00", "Empty"); }
         public String get14001600() { return timeSlotAllocations.getOrDefault("14:00-16:00", "Empty"); }
         public String get16001800() { return timeSlotAllocations.getOrDefault("16:00-18:00", "Empty"); }
-        public String get19002200() { return timeSlotAllocations.getOrDefault("19:00-22:00", "Empty"); }
+        public String get19002200() { return timeSlotAllocations.getOrDefault("18:00-20:00", "Empty"); }
 
         public String getCustomTimeSlot(String timeSlot) {
             return timeSlotAllocations.getOrDefault(timeSlot, "Empty");
@@ -535,15 +528,83 @@ public class DashBoardReportsController extends BaseDashboardController {
 
     @FXML
     private void handleWeeklyAllocationsExportCSV() {
-         // bora maranhao
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+        File file = fileChooser.showSaveDialog(reportTable.getScene().getWindow());
+
+        if (file != null) {
+            try (PrintWriter writer = new PrintWriter(new FileWriter(file))) {
+                List<String> headers = reportTable.getColumns().stream()
+                        .map(TableColumn::getText)
+                        .collect(Collectors.toList());
+                writer.println(String.join(";", headers));
+
+                for (ReportRow item : reportTable.getItems()) {
+                    List<String> row = new ArrayList<>();
+                    row.add(item.getDayOfWeek());
+                    for (TableColumn<ReportRow, ?> column : reportTable.getColumns().subList(1, reportTable.getColumns().size())) {
+                        String cellValue = (String) column.getCellObservableValue(item).getValue();
+                        row.add("\"" + cellValue.replace("\"", "\"\"") + "\"");
+                    }
+                    writer.println(String.join(";", row));
+                }
+                showAlert(Alert.AlertType.INFORMATION, "Success", "Report exported successfully to CSV.");
+            } catch (IOException e) {
+                showAlert(Alert.AlertType.ERROR, "Error", "Failed to export report to CSV: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
     }
     @FXML
     private void handleRoomUsageExportCSV() {
-         // bora maranhao
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+        File file = fileChooser.showSaveDialog(roomUsageTable.getScene().getWindow());
+
+        if (file != null) {
+            try (PrintWriter writer = new PrintWriter(new FileWriter(file))) {
+                writer.println("Room;Occupancy Rate;Most Used Time Slot;Total Allocations");
+
+                for (RoomUsageRow item : roomUsageTable.getItems()) {
+                    writer.printf("\"%s\";%s;\"%s\";%s%n",
+                            item.getRoomName(),
+                            item.getOccupancyRate(),
+                            item.getMostUsedSlot(),
+                            item.getTotalAllocations());
+                }
+                showAlert(Alert.AlertType.INFORMATION, "Success", "Report exported successfully to CSV.");
+            } catch (IOException e) {
+                showAlert(Alert.AlertType.ERROR, "Error", "Failed to export report to CSV: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
     }
     @FXML
     private void handleClassroomDistributionExportCSV() {
-        // bora maranhao
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+        File file = fileChooser.showSaveDialog(classroomDistributionTable.getScene().getWindow());
+
+        if (file != null) {
+            try (PrintWriter writer = new PrintWriter(new FileWriter(file))) {
+                String header = String.format("%s;%s;%s",
+                        distributionValueColumn.getText(),
+                        classroomCountColumn.getText(),
+                        allocationCountColumn.getText());
+                writer.println(header);
+
+                for (ClassroomDistributionRow item : classroomDistributionTable.getItems()) {
+                    writer.printf("\"%s\";\"%s\";%s%n",
+                            item.getDistributionValue(),
+                            item.getClassroomCount(),
+                            item.getAllocationCount());
+                }
+                showAlert(Alert.AlertType.INFORMATION, "Success", "Report exported successfully to CSV.");
+            } catch (IOException e) {
+                showAlert(Alert.AlertType.ERROR, "Error", "Failed to export report to CSV: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
     }
 
     private void showAlert(Alert.AlertType alertType, String title, String content) {
