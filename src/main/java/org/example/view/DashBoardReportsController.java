@@ -533,6 +533,19 @@ public class DashBoardReportsController extends BaseDashboardController {
         }
     }
 
+    @FXML
+    private void handleWeeklyAllocationsExportCSV() {
+         // bora maranhao
+    }
+    @FXML
+    private void handleRoomUsageExportCSV() {
+         // bora maranhao
+    }
+    @FXML
+    private void handleClassroomDistributionExportCSV() {
+        // bora maranhao
+    }
+
     private void showAlert(Alert.AlertType alertType, String title, String content) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);

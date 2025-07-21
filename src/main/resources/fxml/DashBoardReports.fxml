@@ -167,6 +167,7 @@
             <HBox alignment="CENTER_LEFT" spacing="10.0">
                <Label text="Weekly Allocations Report" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 18px;" HBox.hgrow="ALWAYS" />
                <Button text="Export PDF" onAction="#handleWeeklyAllocationsExportPDF" />
+               <Button text="Export CSV" onAction="#handleWeeklyAllocationsExportCSV" />
             </HBox>
             <TableView fx:id="reportTable" prefHeight="220.0" prefWidth="1010.0">
                <columns>
@@ -177,6 +178,7 @@
             <HBox alignment="CENTER_LEFT" spacing="10.0">
                <Label text="Room Usage Report" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 18px;" HBox.hgrow="ALWAYS" />
                <Button text="Export PDF" onAction="#handleRoomUsageExportPDF" />
+               <Button text="Export CSV" onAction="#handleRoomUsageExportCSV" />
             </HBox>
             <TableView fx:id="roomUsageTable" prefHeight="220.0" prefWidth="1010.0">
                <columns>
@@ -191,6 +193,7 @@
                <Label text="Classroom Distribution Report" style="-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 18px;" HBox.hgrow="ALWAYS" />
                <ComboBox fx:id="distributionTypePicker" promptText="Select distribution type" prefWidth="150" />
                <Button text="Export PDF" onAction="#handleClassroomDistributionExportPDF" />
+               <Button text="Export CSV" onAction="#handleClassroomDistributionExportCSV" />
             </HBox>
             <TableView fx:id="classroomDistributionTable" prefHeight="220.0" prefWidth="1010.0">
                <columns>

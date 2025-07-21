@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -9,6 +10,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="890.0" prefWidth="1315.0" styleClass="gradient-background" stylesheets="@../css/DashBoardBaseStyle.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.view.DashBoardHomeController">
    <top>
@@ -157,4 +159,44 @@
          </padding>
       </VBox>
    </left>
+   <center>
+      <VBox alignment="TOP_CENTER" prefHeight="795.0" prefWidth="870.0" spacing="32.0" BorderPane.alignment="CENTER">
+         <children>
+            <HBox fx:id="cardsHBox" alignment="CENTER_LEFT" prefHeight="145.0" prefWidth="1011.0" spacing="32.0">
+               <children>
+                  <Pane fx:id="card1" prefHeight="178.0" prefWidth="315.0" styleClass="card">
+                     <padding>
+                        <Insets bottom="32.0" left="60.0" right="24.0" top="32.0" />
+                     </padding>
+                  </Pane>
+                  <Pane fx:id="card2" prefHeight="119.0" prefWidth="313.0" styleClass="card">
+                     <padding>
+                        <Insets bottom="32.0" left="60.0" right="24.0" top="32.0" />
+                     </padding>
+                  </Pane>
+                  <Pane fx:id="card3" prefHeight="220.0" prefWidth="340.0" styleClass="card">
+                     <padding>
+                        <Insets bottom="32.0" left="60.0" right="24.0" top="32.0" />
+                     </padding>
+                  </Pane>
+               </children>
+               <VBox.margin>
+                  <Insets right="12.0" />
+               </VBox.margin>
+            </HBox>
+            <Text fx:id="pieChartTitle" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Room Allocation Chart" textAlignment="LEFT" wrappingWidth="845.0">
+               <VBox.margin>
+                  <Insets bottom="8.0" top="16.0" />
+               </VBox.margin>
+               <font>
+                  <Font name="Bookman Old Style Bold" size="70.0" />
+               </font>
+            </Text>
+            <PieChart fx:id="pieChart" prefHeight="459.0" prefWidth="1023.0" />
+         </children>
+         <BorderPane.margin>
+            <Insets top="20.0" />
+         </BorderPane.margin>
+      </VBox>
+   </center>
 </BorderPane>
