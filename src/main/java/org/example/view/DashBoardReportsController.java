@@ -78,7 +78,7 @@ public class DashBoardReportsController extends BaseDashboardController {
     }
 
     private void setupDistributionTypePicker() {
-        distributionTypePicker.getItems().addAll("Teacher", "Shift", "Subject");
+        distributionTypePicker.getItems().addAll("Teacher", "Shift"); // Removido 'Subject'
         distributionTypePicker.setValue("Teacher");
         distributionTypePicker.setOnAction(e -> filterClassroomDistribution());
     }
@@ -246,34 +246,7 @@ public class DashBoardReportsController extends BaseDashboardController {
             }
         }
 
-        if ("Subject".equals(selectedType)) {
-            try {
-                List<Subject> subjects = subjectService.getAll();
-                for (Subject subject : subjects) {
-
-                    List<Classroom> subjectClassrooms = classrooms.stream()
-                            .filter(c -> c.getResponsibleTeacher() != null)
-                            .collect(Collectors.toList());
-
-                    if (!subjectClassrooms.isEmpty()) {
-                        long allocationCount = allAllocations.stream()
-                                .filter(a -> a.getClassroom() != null && subjectClassrooms.contains(a.getClassroom()))
-                                .count();
-
-                        String classroomsList = subjectClassrooms.stream()
-                                .map(Classroom::getSemester)
-                                .collect(Collectors.joining(", "));
-
-                        allDistributionRows.add(new ClassroomDistributionRow(
-                                subject.getName(),
-                                classroomsList,
-                                String.valueOf(allocationCount)
-                        ));
-                    }
-                }
-            } catch (Exception e) {
-            }
-        }
+        // Removido o bloco 'Subject'
 
         classroomDistributionTable.setItems(allDistributionRows);
     }
