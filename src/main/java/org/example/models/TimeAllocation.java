@@ -1,5 +1,6 @@
 package org.example.models;
 
+import java.io.Serializable;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,11 +12,16 @@ import lombok.Getter;
 @Getter
 @Setter
 
-public class TimeAllocation {
+public class TimeAllocation implements Serializable {
+    private static final long serialVersionUID = 1L;
     private static long nextId = 1;
     private final long id;
     private UUID uuid;
     private Classroom classroom;
     private Room room;
     private TimeBlock timeBlock;
+    
+    public static long getNextId() {
+        return nextId++;
+    }
 }

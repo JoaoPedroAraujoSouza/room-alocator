@@ -1,5 +1,6 @@
 package org.example.models;
 
+import java.io.Serializable;
 import java.time.LocalTime;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -12,11 +13,16 @@ import lombok.Getter;
 @Getter
 @Setter
 
-public class UnavailabityPeriod {
+public class UnavailabityPeriod implements Serializable {
+    private static final long serialVersionUID = 1L;
     private static long nextId = 1;
     private final long id;
     private UUID uuid;
     private LocalTime startDate;
     private LocalTime endDate;
     private String reason;
+    
+    public static long getNextId() {
+        return nextId++;
+    }
 }
