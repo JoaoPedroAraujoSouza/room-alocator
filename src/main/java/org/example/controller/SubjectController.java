@@ -1,4 +1,4 @@
-package org.example.controller.api;
+package org.example.controller;
 
 import java.io.IOException;
 import java.util.List;

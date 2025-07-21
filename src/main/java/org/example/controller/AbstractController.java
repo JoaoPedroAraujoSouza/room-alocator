@@ -1,4 +1,4 @@
-package org.example.controller.api;
+package org.example.controller;
 
 import java.util.List;
 import java.util.Optional;
